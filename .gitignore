@@ -1,0 +1,24 @@
+# Personal data and secrets: never upload.
+#   data/settings.json         API keys (Claude, DeepSeek)
+#   data/youtube-browser/      signed-in YouTube browser profile (login cookies)
+#   data/members-settings.json Members-only settings
+#   data/transcripts, ai, ...  downloaded subtitles and analyses
+data/
+
+# Rebuilt by `npm install` / members\setup.bat
+node_modules/
+members/.venv/
+members/.pytest_cache/
+__pycache__/
+*.pyc
+
+# Test output
+test-results/
+test-report/
+
+# Local editor / Claude Code settings
+.claude/
+
+*.log
+.env
+.env.*

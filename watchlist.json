@@ -1,0 +1,1607 @@
+[
+  {
+    "symbol": "NIFTY",
+    "name": "Nifty 50",
+    "type": "index",
+    "aliases": [
+      "nifty",
+      "nifty 50",
+      "निफ्टी",
+      "निफ्टी 50",
+      "nft",
+      "निफ्ट्टी"
+    ]
+  },
+  {
+    "symbol": "BANKNIFTY",
+    "name": "Bank Nifty",
+    "type": "index",
+    "aliases": [
+      "bank nifty",
+      "बैंक निफ्टी",
+      "निफ्टी बैंक",
+      "nifty bank",
+      "nft bank",
+      "बैंक निफ्ट्टी",
+      "निफ्ट्टी बैंक"
+    ]
+  },
+  {
+    "symbol": "SENSEX",
+    "name": "Sensex",
+    "type": "index",
+    "aliases": [
+      "sensex",
+      "सेंसेक्स"
+    ]
+  },
+  {
+    "symbol": "MIDCAP",
+    "name": "Midcap index",
+    "type": "index",
+    "aliases": [
+      "midcap",
+      "मिडकैप",
+      "मिड कैप"
+    ]
+  },
+  {
+    "symbol": "SMALLCAP",
+    "name": "Smallcap index",
+    "type": "index",
+    "aliases": [
+      "smallcap",
+      "स्मॉलकैप",
+      "स्मॉल कैप",
+      "स्मालकैप",
+      "स्माल कैप"
+    ]
+  },
+  {
+    "symbol": "RELIANCE",
+    "name": "Reliance Industries",
+    "type": "stock",
+    "aliases": [
+      "reliance",
+      "reliance industries",
+      "रिलायंस"
+    ]
+  },
+  {
+    "symbol": "JIO",
+    "name": "Jio Platforms",
+    "type": "stock",
+    "aliases": [
+      "jio",
+      "jio platforms",
+      "जियो",
+      "जिओ",
+      "जियो प्लेटफॉर्म्स",
+      "जियो प्लेटफॉर्म"
+    ],
+    "needsContext": [
+      "jio",
+      "जियो",
+      "जिओ"
+    ]
+  },
+  {
+    "symbol": "JIOFIN",
+    "name": "Jio Financial Services",
+    "type": "stock",
+    "aliases": [
+      "jio financial",
+      "jio finance",
+      "जियो फाइनेंशियल",
+      "जियो फाइनेंस"
+    ]
+  },
+  {
+    "symbol": "TCS",
+    "name": "Tata Consultancy Services",
+    "type": "stock",
+    "aliases": [
+      "tcs",
+      "टीसीएस"
+    ]
+  },
+  {
+    "symbol": "INFY",
+    "name": "Infosys",
+    "type": "stock",
+    "aliases": [
+      "infosys",
+      "इंफोसिस",
+      "इन्फोसिस"
+    ]
+  },
+  {
+    "symbol": "WIPRO",
+    "name": "Wipro",
+    "type": "stock",
+    "aliases": [
+      "wipro",
+      "विप्रो",
+      "wpro"
+    ]
+  },
+  {
+    "symbol": "HCLTECH",
+    "name": "HCL Technologies",
+    "type": "stock",
+    "aliases": [
+      "hcl",
+      "hcl tech",
+      "hcltech",
+      "एचसीएल",
+      "एचसीएल टेक"
+    ]
+  },
+  {
+    "symbol": "TECHM",
+    "name": "Tech Mahindra",
+    "type": "stock",
+    "aliases": [
+      "tech mahindra",
+      "टेक महिंद्रा"
+    ]
+  },
+  {
+    "symbol": "LTIM",
+    "name": "LTIMindtree",
+    "type": "stock",
+    "aliases": [
+      "ltimindtree",
+      "lti mindtree",
+      "mindtree",
+      "माइंडट्री"
+    ]
+  },
+  {
+    "symbol": "HDFCBANK",
+    "name": "HDFC Bank",
+    "type": "stock",
+    "aliases": [
+      "hdfc",
+      "hdfc bank",
+      "एचडीएफसी",
+      "एचडीएफसी बैंक"
+    ]
+  },
+  {
+    "symbol": "HDFCLIFE",
+    "name": "HDFC Life",
+    "type": "stock",
+    "aliases": [
+      "hdfc life",
+      "एचडीएफसी लाइफ",
+      "hdfc लाइफ",
+      "hdfc l"
+    ]
+  },
+  {
+    "symbol": "ICICIBANK",
+    "name": "ICICI Bank",
+    "type": "stock",
+    "aliases": [
+      "icici",
+      "icici bank",
+      "आईसीआईसीआई",
+      "आईसीआईसीआई बैंक"
+    ]
+  },
+  {
+    "symbol": "SBIN",
+    "name": "State Bank of India",
+    "type": "stock",
+    "aliases": [
+      "sbi",
+      "state bank",
+      "एसबीआई",
+      "स्टेट बैंक"
+    ]
+  },
+  {
+    "symbol": "SBILIFE",
+    "name": "SBI Life",
+    "type": "stock",
+    "aliases": [
+      "sbi life",
+      "एसबीआई लाइफ",
+      "sbi लाइफ",
+      "sbi l"
+    ]
+  },
+  {
+    "symbol": "AXISBANK",
+    "name": "Axis Bank",
+    "type": "stock",
+    "aliases": [
+      "axis",
+      "axis bank",
+      "एक्सिस",
+      "एक्सिस बैंक",
+      "axis बैंक"
+    ],
+    "needsContext": [
+      "एक्सिस"
+    ]
+  },
+  {
+    "symbol": "KOTAKBANK",
+    "name": "Kotak Mahindra Bank",
+    "type": "stock",
+    "aliases": [
+      "kotak",
+      "kotak bank",
+      "kotak mahindra",
+      "कोटक",
+      "कोटक बैंक",
+      "कोटक महिंद्रा"
+    ]
+  },
+  {
+    "symbol": "INDUSINDBK",
+    "name": "IndusInd Bank",
+    "type": "stock",
+    "aliases": [
+      "indusind",
+      "indusind bank",
+      "इंडसइंड",
+      "इंडसइंड बैंक"
+    ]
+  },
+  {
+    "symbol": "YESBANK",
+    "name": "Yes Bank",
+    "type": "stock",
+    "aliases": [
+      "yes bank",
+      "यस बैंक"
+    ]
+  },
+  {
+    "symbol": "BAJFINANCE",
+    "name": "Bajaj Finance",
+    "type": "stock",
+    "aliases": [
+      "bajaj finance",
+      "बजाज फाइनेंस"
+    ]
+  },
+  {
+    "symbol": "BAJAJFINSV",
+    "name": "Bajaj Finserv",
+    "type": "stock",
+    "aliases": [
+      "bajaj finserv",
+      "बजाज फिनसर्व"
+    ]
+  },
+  {
+    "symbol": "BAJAJ-AUTO",
+    "name": "Bajaj Auto",
+    "type": "stock",
+    "aliases": [
+      "bajaj auto",
+      "बजाज ऑटो"
+    ]
+  },
+  {
+    "symbol": "SHRIRAMFIN",
+    "name": "Shriram Finance",
+    "type": "stock",
+    "aliases": [
+      "shriram finance",
+      "श्रीराम फाइनेंस"
+    ]
+  },
+  {
+    "symbol": "LT",
+    "name": "Larsen & Toubro",
+    "type": "stock",
+    "aliases": [
+      "l&t",
+      "larsen",
+      "larsen & toubro",
+      "एल एंड टी",
+      "एलएनटी",
+      "लार्सन",
+      "lnt"
+    ]
+  },
+  {
+    "symbol": "ITC",
+    "name": "ITC",
+    "type": "stock",
+    "aliases": [
+      "itc",
+      "आईटीसी"
+    ]
+  },
+  {
+    "symbol": "HINDUNILVR",
+    "name": "Hindustan Unilever",
+    "type": "stock",
+    "aliases": [
+      "hul",
+      "hindustan unilever",
+      "एचयूएल",
+      "हिंदुस्तान यूनिलीवर"
+    ]
+  },
+  {
+    "symbol": "NESTLEIND",
+    "name": "Nestle India",
+    "type": "stock",
+    "aliases": [
+      "nestle",
+      "नेस्ले",
+      "nstle"
+    ]
+  },
+  {
+    "symbol": "BRITANNIA",
+    "name": "Britannia",
+    "type": "stock",
+    "aliases": [
+      "britannia",
+      "ब्रिटानिया"
+    ]
+  },
+  {
+    "symbol": "TATACONSUM",
+    "name": "Tata Consumer",
+    "type": "stock",
+    "aliases": [
+      "tata consumer",
+      "टाटा कंज्यूमर"
+    ]
+  },
+  {
+    "symbol": "BHARTIARTL",
+    "name": "Bharti Airtel",
+    "type": "stock",
+    "aliases": [
+      "airtel",
+      "bharti airtel",
+      "bharti",
+      "एयरटेल",
+      "भारती",
+      "भारती एयरटेल"
+    ]
+  },
+  {
+    "symbol": "IDEA",
+    "name": "Vodafone Idea",
+    "type": "stock",
+    "aliases": [
+      "vodafone idea",
+      "voda idea",
+      "vodafone",
+      "वोडाफोन",
+      "वोडाफोन आइडिया",
+      "वोडा आइडिया"
+    ]
+  },
+  {
+    "symbol": "M&M",
+    "name": "Mahindra & Mahindra",
+    "type": "stock",
+    "aliases": [
+      "mahindra",
+      "m&m",
+      "mahindra & mahindra",
+      "mahindra and mahindra",
+      "महिंद्रा",
+      "एम एंड एम",
+      "महिंद्रा एंड महिंद्रा"
+    ]
+  },
+  {
+    "symbol": "MARUTI",
+    "name": "Maruti Suzuki",
+    "type": "stock",
+    "aliases": [
+      "maruti",
+      "maruti suzuki",
+      "मारुति",
+      "मारुती"
+    ]
+  },
+  {
+    "symbol": "TATAMOTORS",
+    "name": "Tata Motors",
+    "type": "stock",
+    "aliases": [
+      "tata motors",
+      "टाटा मोटर्स"
+    ]
+  },
+  {
+    "symbol": "TATASTEEL",
+    "name": "Tata Steel",
+    "type": "stock",
+    "aliases": [
+      "tata steel",
+      "टाटा स्टील"
+    ]
+  },
+  {
+    "symbol": "TATAPOWER",
+    "name": "Tata Power",
+    "type": "stock",
+    "aliases": [
+      "tata power",
+      "टाटा पावर"
+    ]
+  },
+  {
+    "symbol": "EICHERMOT",
+    "name": "Eicher Motors",
+    "type": "stock",
+    "aliases": [
+      "eicher",
+      "royal enfield",
+      "आयशर",
+      "रॉयल एनफील्ड"
+    ]
+  },
+  {
+    "symbol": "HEROMOTOCO",
+    "name": "Hero MotoCorp",
+    "type": "stock",
+    "aliases": [
+      "hero moto",
+      "hero motocorp",
+      "हीरो मोटो",
+      "हीरो मोटोकॉर्प"
+    ]
+  },
+  {
+    "symbol": "TITAN",
+    "name": "Titan",
+    "type": "stock",
+    "aliases": [
+      "titan",
+      "टाइटन"
+    ]
+  },
+  {
+    "symbol": "TRENT",
+    "name": "Trent",
+    "type": "stock",
+    "aliases": [
+      "trent",
+      "ट्रेंट"
+    ]
+  },
+  {
+    "symbol": "ASIANPAINT",
+    "name": "Asian Paints",
+    "type": "stock",
+    "aliases": [
+      "asian paints",
+      "एशियन पेंट्स"
+    ]
+  },
+  {
+    "symbol": "ULTRACEMCO",
+    "name": "UltraTech Cement",
+    "type": "stock",
+    "aliases": [
+      "ultratech",
+      "अल्ट्राटेक"
+    ]
+  },
+  {
+    "symbol": "GRASIM",
+    "name": "Grasim",
+    "type": "stock",
+    "aliases": [
+      "grasim",
+      "ग्रासिम"
+    ]
+  },
+  {
+    "symbol": "SUNPHARMA",
+    "name": "Sun Pharma",
+    "type": "stock",
+    "aliases": [
+      "sun pharma",
+      "सन फार्मा",
+      "sun farma"
+    ]
+  },
+  {
+    "symbol": "DRREDDY",
+    "name": "Dr Reddy's",
+    "type": "stock",
+    "aliases": [
+      "dr reddy",
+      "dr reddy's",
+      "डॉ रेड्डी",
+      "डॉक्टर रेड्डी",
+      "रेड्डीज",
+      "रेडीज"
+    ]
+  },
+  {
+    "symbol": "CIPLA",
+    "name": "Cipla",
+    "type": "stock",
+    "aliases": [
+      "cipla",
+      "सिप्ला",
+      "सिपला"
+    ]
+  },
+  {
+    "symbol": "APOLLOHOSP",
+    "name": "Apollo Hospitals",
+    "type": "stock",
+    "aliases": [
+      "apollo hospitals",
+      "apollo",
+      "अपोलो"
+    ]
+  },
+  {
+    "symbol": "ONGC",
+    "name": "ONGC",
+    "type": "stock",
+    "aliases": [
+      "ongc",
+      "ओएनजीसी"
+    ]
+  },
+  {
+    "symbol": "NTPC",
+    "name": "NTPC",
+    "type": "stock",
+    "aliases": [
+      "ntpc",
+      "एनटीपीसी"
+    ]
+  },
+  {
+    "symbol": "POWERGRID",
+    "name": "Power Grid",
+    "type": "stock",
+    "aliases": [
+      "power grid",
+      "पावर ग्रिड"
+    ]
+  },
+  {
+    "symbol": "COALINDIA",
+    "name": "Coal India",
+    "type": "stock",
+    "aliases": [
+      "coal india",
+      "कोल इंडिया"
+    ]
+  },
+  {
+    "symbol": "BPCL",
+    "name": "BPCL",
+    "type": "stock",
+    "aliases": [
+      "bpcl",
+      "बीपीसीएल",
+      "बीपीपीसीएल"
+    ]
+  },
+  {
+    "symbol": "IOC",
+    "name": "Indian Oil",
+    "type": "stock",
+    "aliases": [
+      "indian oil",
+      "ioc",
+      "इंडियन ऑयल",
+      "आईओसी"
+    ]
+  },
+  {
+    "symbol": "HINDALCO",
+    "name": "Hindalco",
+    "type": "stock",
+    "aliases": [
+      "hindalco",
+      "हिंडाल्को",
+      "हिंडालको",
+      "halco"
+    ]
+  },
+  {
+    "symbol": "JSWSTEEL",
+    "name": "JSW Steel",
+    "type": "stock",
+    "aliases": [
+      "jsw steel",
+      "jsw",
+      "जेएसडब्ल्यू"
+    ]
+  },
+  {
+    "symbol": "VEDL",
+    "name": "Vedanta",
+    "type": "stock",
+    "aliases": [
+      "vedanta",
+      "वेदांता",
+      "vedant"
+    ]
+  },
+  {
+    "symbol": "ADANI",
+    "name": "Adani Group",
+    "type": "stock",
+    "aliases": [
+      "adani",
+      "अदानी",
+      "अडानी"
+    ]
+  },
+  {
+    "symbol": "ADANIENT",
+    "name": "Adani Enterprises",
+    "type": "stock",
+    "aliases": [
+      "adani enterprises",
+      "adani ent",
+      "अदानी एंटरप्राइजेज"
+    ]
+  },
+  {
+    "symbol": "ADANIPORTS",
+    "name": "Adani Ports",
+    "type": "stock",
+    "aliases": [
+      "adani ports",
+      "अदानी पोर्ट्स"
+    ]
+  },
+  {
+    "symbol": "ETERNAL",
+    "name": "Eternal (Zomato)",
+    "type": "stock",
+    "aliases": [
+      "zomato",
+      "eternal",
+      "जोमैटो",
+      "इटरनल",
+      "एटर्नल",
+      "एटरनल",
+      "एटरर्नल",
+      "इटरर्नल",
+      "इटर्नल"
+    ]
+  },
+  {
+    "symbol": "PAYTM",
+    "name": "Paytm",
+    "type": "stock",
+    "aliases": [
+      "paytm",
+      "पेटीएम"
+    ]
+  },
+  {
+    "symbol": "HAL",
+    "name": "Hindustan Aeronautics",
+    "type": "stock",
+    "aliases": [
+      "hal",
+      "hindustan aeronautics",
+      "एचएएल"
+    ]
+  },
+  {
+    "symbol": "BEL",
+    "name": "Bharat Electronics",
+    "type": "stock",
+    "aliases": [
+      "bel",
+      "bharat electronics",
+      "बीईएल",
+      "भारत इलेक्ट्रॉनिक्स"
+    ]
+  },
+  {
+    "symbol": "RVNL",
+    "name": "RVNL",
+    "type": "stock",
+    "aliases": [
+      "rvnl",
+      "आरवीएनएल"
+    ]
+  },
+  {
+    "symbol": "IRFC",
+    "name": "IRFC",
+    "type": "stock",
+    "aliases": [
+      "irfc",
+      "आईआरएफसी"
+    ]
+  },
+  {
+    "symbol": "SUZLON",
+    "name": "Suzlon",
+    "type": "stock",
+    "aliases": [
+      "suzlon",
+      "सुजलॉन",
+      "suzelon",
+      "suzzlon",
+      "suzuelon",
+      "suzzelon",
+      "सुजलन"
+    ]
+  },
+  {
+    "symbol": "LICI",
+    "name": "Life Insurance Corporation Of India",
+    "type": "stock",
+    "aliases": [
+      "lic",
+      "एलआईसी"
+    ]
+  },
+  {
+    "symbol": "LICHSGFIN",
+    "name": "LIC Housing Finance",
+    "type": "stock",
+    "aliases": [
+      "lic housing",
+      "lic housing finance",
+      "एलआईसी हाउसिंग",
+      "एलआईसी हाउसिंग फाइनेंस",
+      "lic हाउसिंग",
+      "lic हाउसिंग फाइनेंस"
+    ]
+  },
+  {
+    "symbol": "PNB",
+    "name": "Punjab National Bank",
+    "type": "stock",
+    "aliases": [
+      "pnb",
+      "पीएनबी",
+      "पंजाब नेशनल बैंक"
+    ]
+  },
+  {
+    "symbol": "PNBHOUSING",
+    "name": "PNB Housing Finance",
+    "type": "stock",
+    "aliases": [
+      "pnb housing",
+      "पीएनबी हाउसिंग"
+    ]
+  },
+  {
+    "symbol": "PERSISTENT",
+    "name": "Persistent Systems",
+    "type": "stock",
+    "aliases": [
+      "persistent",
+      "पर्सिस्टेंट"
+    ]
+  },
+  {
+    "symbol": "TVSMOTOR",
+    "name": "TVS Motor Company",
+    "type": "stock",
+    "aliases": [
+      "tvs",
+      "tvs motor",
+      "tvs motors",
+      "टीवीएस",
+      "टीवीएस मोटर"
+    ]
+  },
+  {
+    "symbol": "INDHOTEL",
+    "name": "The Indian Hotels Company",
+    "type": "stock",
+    "aliases": [
+      "indian hotels",
+      "इंडियन होटल्स"
+    ]
+  },
+  {
+    "symbol": "INDIGO",
+    "name": "InterGlobe Aviation",
+    "type": "stock",
+    "aliases": [
+      "indigo",
+      "interglobe",
+      "इंडिगो"
+    ]
+  },
+  {
+    "symbol": "COLPAL",
+    "name": "Colgate Palmolive (India)",
+    "type": "stock",
+    "aliases": [
+      "colgate",
+      "colgate palmolive",
+      "coolgate",
+      "कोलगेट"
+    ]
+  },
+  {
+    "symbol": "LTF",
+    "name": "L&T Finance",
+    "type": "stock",
+    "aliases": [
+      "l&t finance",
+      "lnt finance",
+      "एल एंड टी फाइनेंस",
+      "एलएनटी फाइनेंस"
+    ]
+  },
+  {
+    "symbol": "DLF",
+    "name": "DLF",
+    "type": "stock",
+    "aliases": [
+      "dlf",
+      "डीएलएफ"
+    ]
+  },
+  {
+    "symbol": "FEDERALBNK",
+    "name": "The Federal Bank",
+    "type": "stock",
+    "aliases": [
+      "federal bank",
+      "फेडरल बैंक"
+    ]
+  },
+  {
+    "symbol": "POLYCAB",
+    "name": "Polycab India",
+    "type": "stock",
+    "aliases": [
+      "polycab",
+      "पॉलीकैब",
+      "पॉलीकब",
+      "पोलकैब"
+    ]
+  },
+  {
+    "symbol": "UNIONBANK",
+    "name": "Union Bank of India",
+    "type": "stock",
+    "aliases": [
+      "union bank",
+      "यूनियन बैंक"
+    ]
+  },
+  {
+    "symbol": "MANAPPURAM",
+    "name": "Manappuram Finance",
+    "type": "stock",
+    "aliases": [
+      "manappuram",
+      "मनापुरम",
+      "मन्नापुरम",
+      "मणपुरम",
+      "मनोपुरम",
+      "मणप्पुरम"
+    ]
+  },
+  {
+    "symbol": "TATAELXSI",
+    "name": "Tata Elxsi",
+    "type": "stock",
+    "aliases": [
+      "tata elxsi",
+      "tata alexi",
+      "टाटा एलेक्सी",
+      "टाटा एल्क्सी"
+    ]
+  },
+  {
+    "symbol": "HINDPETRO",
+    "name": "Hindustan Petroleum Corporation",
+    "type": "stock",
+    "aliases": [
+      "hpcl",
+      "एचपीसीएल"
+    ]
+  },
+  {
+    "symbol": "MANKIND",
+    "name": "Mankind Pharma",
+    "type": "stock",
+    "aliases": [
+      "mankind",
+      "मैनकाइंड",
+      "मैनकंड"
+    ]
+  },
+  {
+    "symbol": "HYUNDAI",
+    "name": "Hyundai Motor India",
+    "type": "stock",
+    "aliases": [
+      "hyundai",
+      "hyundai motor",
+      "हुंडई",
+      "ह्युंडई"
+    ]
+  },
+  {
+    "symbol": "GALLANTT",
+    "name": "Gallantt Ispat",
+    "type": "stock",
+    "aliases": [
+      "gallantt",
+      "गैलेंट"
+    ]
+  },
+  {
+    "symbol": "CGPOWER",
+    "name": "CG Power and Industrial Solutions",
+    "type": "stock",
+    "aliases": [
+      "cg power",
+      "सीजी पावर"
+    ]
+  },
+  {
+    "symbol": "SRF",
+    "name": "SRF",
+    "type": "stock",
+    "aliases": [
+      "srf",
+      "एसआरएफ"
+    ]
+  },
+  {
+    "symbol": "SIEMENS",
+    "name": "Siemens",
+    "type": "stock",
+    "aliases": [
+      "siemens",
+      "सीमेंस",
+      "सीमंस"
+    ]
+  },
+  {
+    "symbol": "BHEL",
+    "name": "Bharat Heavy Electricals",
+    "type": "stock",
+    "aliases": [
+      "bhel",
+      "भेल",
+      "बीएचईएल"
+    ]
+  },
+  {
+    "symbol": "BDL",
+    "name": "Bharat Dynamics",
+    "type": "stock",
+    "aliases": [
+      "bdl",
+      "bharat dynamics",
+      "बीडीएल",
+      "भारत डायनामिक्स"
+    ]
+  },
+  {
+    "symbol": "IDFCFIRSTB",
+    "name": "IDFC First Bank",
+    "type": "stock",
+    "aliases": [
+      "idfc",
+      "idfc first",
+      "आईडीएफसी",
+      "आईडीएफसी फर्स्ट"
+    ]
+  },
+  {
+    "symbol": "SWIGGY",
+    "name": "Swiggy",
+    "type": "stock",
+    "aliases": [
+      "swiggy",
+      "स्विगी"
+    ]
+  },
+  {
+    "symbol": "KALYANKJIL",
+    "name": "Kalyan Jewellers India",
+    "type": "stock",
+    "aliases": [
+      "kalyan jewellers",
+      "कल्याण ज्वेलर्स"
+    ]
+  },
+  {
+    "symbol": "MUTHOOTFIN",
+    "name": "Muthoot Finance",
+    "type": "stock",
+    "aliases": [
+      "muthoot",
+      "मुथूट",
+      "मुथुट"
+    ]
+  },
+  {
+    "symbol": "ABB",
+    "name": "ABB India",
+    "type": "stock",
+    "aliases": [
+      "abb",
+      "एबीबी"
+    ]
+  },
+  {
+    "symbol": "HINDZINC",
+    "name": "Hindustan Zinc",
+    "type": "stock",
+    "aliases": [
+      "hindustan zinc",
+      "हिंदुस्तान जिंक"
+    ]
+  },
+  {
+    "symbol": "GMRAIRPORT",
+    "name": "GMR AIRPORTS",
+    "type": "stock",
+    "aliases": [
+      "gmr",
+      "जीएमआर"
+    ]
+  },
+  {
+    "symbol": "CHOLAFIN",
+    "name": "Cholamandalam Investment and Finance Company",
+    "type": "stock",
+    "aliases": [
+      "chola",
+      "cholamandalam",
+      "चोला",
+      "चोलामंडलम",
+      "चोला मंडलम"
+    ]
+  },
+  {
+    "symbol": "OIL",
+    "name": "Oil India",
+    "type": "stock",
+    "aliases": [
+      "oil india",
+      "ऑयल इंडिया"
+    ]
+  },
+  {
+    "symbol": "BANDHANBNK",
+    "name": "Bandhan Bank",
+    "type": "stock",
+    "aliases": [
+      "bandhan bank",
+      "बंधन बैंक"
+    ]
+  },
+  {
+    "symbol": "HINDCOPPER",
+    "name": "Hindustan Copper",
+    "type": "stock",
+    "aliases": [
+      "hindustan copper",
+      "हिंदुस्तान कॉपर"
+    ]
+  },
+  {
+    "symbol": "FORTIS",
+    "name": "Fortis Healthcare",
+    "type": "stock",
+    "aliases": [
+      "fortis",
+      "फोर्टिस",
+      "फर्टिस"
+    ]
+  },
+  {
+    "symbol": "CDSL",
+    "name": "Central Depository Services (India)",
+    "type": "stock",
+    "aliases": [
+      "cdsl",
+      "सीडीएसएल"
+    ]
+  },
+  {
+    "symbol": "INDUSTOWER",
+    "name": "Indus Towers",
+    "type": "stock",
+    "aliases": [
+      "indus towers",
+      "इंडस टावर",
+      "इंडस टावर्स"
+    ]
+  },
+  {
+    "symbol": "NATIONALUM",
+    "name": "National Aluminium Company",
+    "type": "stock",
+    "aliases": [
+      "nalco",
+      "नाल्को",
+      "national aluminium",
+      "नेशनल एलुमिनियम",
+      "नेशनल एल्युमिनियम",
+      "नेशनल एल्यूमिनियम"
+    ]
+  },
+  {
+    "symbol": "NMDC",
+    "name": "NMDC",
+    "type": "stock",
+    "aliases": [
+      "nmdc",
+      "एनएमडीसी"
+    ]
+  },
+  {
+    "symbol": "PFC",
+    "name": "Power Finance Corporation",
+    "type": "stock",
+    "aliases": [
+      "pfc",
+      "पीएफसी"
+    ]
+  },
+  {
+    "symbol": "HDFCAMC",
+    "name": "HDFC Asset Management Company",
+    "type": "stock",
+    "aliases": [
+      "hdfc amc",
+      "एचडीएफसी एएमसी"
+    ]
+  },
+  {
+    "symbol": "MAZDOCK",
+    "name": "Mazagon Dock Shipbuilders",
+    "type": "stock",
+    "aliases": [
+      "mazagon",
+      "mazagon dock",
+      "मजगांव",
+      "मझगांव"
+    ]
+  },
+  {
+    "symbol": "MPHASIS",
+    "name": "MphasiS",
+    "type": "stock",
+    "aliases": [
+      "mphasis",
+      "एमफेसिस",
+      "एमफैसिस"
+    ]
+  },
+  {
+    "symbol": "POLICYBZR",
+    "name": "PB Fintech",
+    "type": "stock",
+    "aliases": [
+      "pb fintech",
+      "policybazaar",
+      "पॉलिसीबाजार"
+    ]
+  },
+  {
+    "symbol": "WAAREEENER",
+    "name": "Waaree Energies",
+    "type": "stock",
+    "aliases": [
+      "waaree",
+      "वारी",
+      "वारी एनर्जीज"
+    ]
+  },
+  {
+    "symbol": "GODREJPROP",
+    "name": "Godrej Properties",
+    "type": "stock",
+    "aliases": [
+      "godrej properties",
+      "गोदरेज प्रॉपर्टीज"
+    ]
+  },
+  {
+    "symbol": "COCHINSHIP",
+    "name": "Cochin Shipyard",
+    "type": "stock",
+    "aliases": [
+      "cochin shipyard",
+      "कोचीन शिपयार्ड",
+      "कोचिन शिपयार्ड"
+    ]
+  },
+  {
+    "symbol": "RECLTD",
+    "name": "REC",
+    "type": "stock",
+    "aliases": [
+      "आरईसी"
+    ]
+  },
+  {
+    "symbol": "UPL",
+    "name": "UPL",
+    "type": "stock",
+    "aliases": [
+      "upl",
+      "यूपीएल"
+    ]
+  },
+  {
+    "symbol": "PETRONET",
+    "name": "Petronet LNG",
+    "type": "stock",
+    "aliases": [
+      "petronet",
+      "पेट्रोनेट"
+    ]
+  },
+  {
+    "symbol": "JINDALSTEL",
+    "name": "JINDAL STEEL",
+    "type": "stock",
+    "aliases": [
+      "jindal steel",
+      "जिंदल स्टील"
+    ]
+  },
+  {
+    "symbol": "MOTHERSON",
+    "name": "Samvardhana Motherson International",
+    "type": "stock",
+    "aliases": [
+      "motherson",
+      "मदरसन"
+    ]
+  },
+  {
+    "symbol": "DIXON",
+    "name": "Dixon Technologies (India)",
+    "type": "stock",
+    "aliases": [
+      "dixon",
+      "dicson",
+      "डिक्सन"
+    ]
+  },
+  {
+    "symbol": "TATATECH",
+    "name": "Tata Technologies",
+    "type": "stock",
+    "aliases": [
+      "tata tech",
+      "tata technologies",
+      "टाटा टेक",
+      "टाटा टेक्नोलॉजीज"
+    ]
+  },
+  {
+    "symbol": "BAJAJHFL",
+    "name": "Bajaj Housing Finance",
+    "type": "stock",
+    "aliases": [
+      "bajaj housing",
+      "बजाज हाउसिंग"
+    ]
+  },
+  {
+    "symbol": "ANGELONE",
+    "name": "Angel One",
+    "type": "stock",
+    "aliases": [
+      "angel one",
+      "एंजल वन"
+    ]
+  },
+  {
+    "symbol": "SHREECEM",
+    "name": "SHREE CEMENT",
+    "type": "stock",
+    "aliases": [
+      "shree cement",
+      "श्री सीमेंट"
+    ]
+  },
+  {
+    "symbol": "BANKBARODA",
+    "name": "Bank of Baroda",
+    "type": "stock",
+    "aliases": [
+      "bank of baroda",
+      "बैंक ऑफ बडौदा",
+      "बैंक ऑफ बड़ौदा",
+      "बीओबी"
+    ]
+  },
+  {
+    "symbol": "LODHA",
+    "name": "Lodha Developers",
+    "type": "stock",
+    "aliases": [
+      "lodha",
+      "लोढा",
+      "लोढ़ा"
+    ]
+  },
+  {
+    "symbol": "ACC",
+    "name": "ACC",
+    "type": "stock",
+    "aliases": [
+      "acc",
+      "एसीसी"
+    ]
+  },
+  {
+    "symbol": "AUBANK",
+    "name": "AU Small Finance Bank",
+    "type": "stock",
+    "aliases": [
+      "au bank",
+      "au small finance",
+      "एयू बैंक",
+      "एयू स्मॉल फाइनेंस"
+    ]
+  },
+  {
+    "symbol": "DMART",
+    "name": "Avenue Supermarts",
+    "type": "stock",
+    "aliases": [
+      "dmart",
+      "डीमार्ट",
+      "डी मार्ट"
+    ]
+  },
+  {
+    "symbol": "TORNTPHARM",
+    "name": "Torrent Pharmaceuticals",
+    "type": "stock",
+    "aliases": [
+      "torrent pharma",
+      "टोरेंट फार्मा",
+      "टॉरेंट फार्मा"
+    ]
+  },
+  {
+    "symbol": "IREDA",
+    "name": "Indian Renewable Energy Development Agency",
+    "type": "stock",
+    "aliases": [
+      "ireda",
+      "इरेडा"
+    ]
+  },
+  {
+    "symbol": "JUBLFOOD",
+    "name": "Jubilant Foodworks",
+    "type": "stock",
+    "aliases": [
+      "jubilant food",
+      "जुबिलेंट फूड",
+      "जुबिलेंट"
+    ]
+  },
+  {
+    "symbol": "TATACAP",
+    "name": "Tata Capital",
+    "type": "stock",
+    "aliases": [
+      "tata capital",
+      "टाटा कैपिटल"
+    ]
+  },
+  {
+    "symbol": "DIVISLAB",
+    "name": "Divi's Laboratories",
+    "type": "stock",
+    "aliases": [
+      "divis",
+      "divi's",
+      "डिविस",
+      "डिवीज"
+    ]
+  },
+  {
+    "symbol": "DABUR",
+    "name": "Dabur India",
+    "type": "stock",
+    "aliases": [
+      "dabur",
+      "डाबर"
+    ]
+  },
+  {
+    "symbol": "SONACOMS",
+    "name": "Sona BLW Precision Forgings",
+    "type": "stock",
+    "aliases": [
+      "sona blw",
+      "sona comstar",
+      "सोना कॉमस्टार"
+    ]
+  },
+  {
+    "symbol": "BIOCON",
+    "name": "Biocon",
+    "type": "stock",
+    "aliases": [
+      "biocon",
+      "बायोकॉन"
+    ]
+  },
+  {
+    "symbol": "SBICARD",
+    "name": "SBI Cards and Payment Services",
+    "type": "stock",
+    "aliases": [
+      "sbi card",
+      "sbi cards",
+      "sbi कार्ड",
+      "sbi कार्ड्स",
+      "एसबीआई कार्ड",
+      "एसबीआई कार्ड्स"
+    ]
+  },
+  {
+    "symbol": "ICICIGI",
+    "name": "ICICI Lombard General Insurance",
+    "type": "stock",
+    "aliases": [
+      "icici lombard",
+      "icici लोम्बार्ड",
+      "icici लमबार्ड",
+      "आईसीआईसीआई लोम्बार्ड"
+    ]
+  },
+  {
+    "symbol": "NOT-A-STOCK",
+    "name": "Funds, apps and words that contain a stock name",
+    "type": "ignore",
+    "aliases": [
+      "icici pru",
+      "icici prudential",
+      "icici pidenial",
+      "icici प्रू",
+      "icici प्रूडेंशियल",
+      "आईसीआईसीआई प्रू",
+      "आईसीआईसीआई प्रूडेंशियल",
+      "sbi mutual fund",
+      "sbi म्यूचुअल फंड",
+      "sbi म्यूच्यूल फंड",
+      "sbi म्यूच्यूअल फंड",
+      "एसबीआई म्यूचुअल फंड",
+      "hdfc mutual fund",
+      "hdfc म्यूचुअल फंड",
+      "एचडीएफसी म्यूचुअल फंड",
+      "kotak neo",
+      "कोटक नियो",
+      "एक्सिस लिक्विडिटी",
+      "आईटीसी क्लेम",
+      "itc क्लेम",
+      "आईटीसी रिफंड",
+      "एसबीआई म्यूच्यूल फंड",
+      "एसबीआई म्यूच्यूअल फंड",
+      "एसबीआई म्यूचुअल",
+      "sbi म्यूच्यूल",
+      "एसबीआई सेलिब्रेशंस",
+      "एसबीआई सेलिब्रेशनंस",
+      "एसबीआई सेलिबेशंस",
+      "sbi सेलिब्रेशंस",
+      "sbi celebrations",
+      "रेिलियंस",
+      "रेज़िलिएंस",
+      "रेजिलिएंस",
+      "resilience"
+    ]
+  },
+  {
+    "symbol": "CUB",
+    "name": "City Union Bank",
+    "type": "stock",
+    "aliases": [
+      "city union bank",
+      "सिटी यूनियन बैंक",
+      "सिटी यूनियन"
+    ]
+  },
+  {
+    "symbol": "RAYMONDLSL",
+    "name": "Raymond Lifestyle",
+    "type": "stock",
+    "aliases": [
+      "raymond lifestyle",
+      "रेमंड लाइफस्टाइल",
+      "रेमंड लाइफ"
+    ]
+  },
+  {
+    "symbol": "IGPL",
+    "name": "IG Petrochemicals",
+    "type": "stock",
+    "aliases": [
+      "ig petro",
+      "ig petrochemicals",
+      "आईजी पेट्रो",
+      "आईजी पेट्रोकेमिकल्स"
+    ]
+  },
+  {
+    "symbol": "COSMOFIRST",
+    "name": "Cosmo First",
+    "type": "stock",
+    "aliases": [
+      "cosmo first",
+      "cosmo fst",
+      "कॉस्मो फर्स्ट"
+    ]
+  },
+  {
+    "symbol": "PIXTRANS",
+    "name": "Pix Transmissions",
+    "type": "stock",
+    "aliases": [
+      "pix transmissions",
+      "pix transmission",
+      "पिक्स ट्रांसमिशन",
+      "पिक्स ट्रांसमिशंस"
+    ]
+  },
+  {
+    "symbol": "INDIANB",
+    "name": "Indian Bank",
+    "type": "stock",
+    "aliases": [
+      "indian bank",
+      "ind bank",
+      "इंडियन बैंक"
+    ]
+  },
+  {
+    "symbol": "SUPREMEIND",
+    "name": "Supreme Industries",
+    "type": "stock",
+    "aliases": [
+      "supreme industries",
+      "सुप्रीम इंडस्ट्रीज",
+      "सुप्रीम industries"
+    ]
+  },
+  {
+    "symbol": "EXIDEIND",
+    "name": "Exide Industries",
+    "type": "stock",
+    "aliases": [
+      "exide",
+      "एक्साइड",
+      "एक्साइड इंडस्ट्रीज"
+    ]
+  },
+  {
+    "symbol": "ENGINERSIN",
+    "name": "Engineers India",
+    "type": "stock",
+    "aliases": [
+      "engineers india",
+      "इंजीनियर्स इंडिया"
+    ]
+  }
+]

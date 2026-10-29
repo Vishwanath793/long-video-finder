@@ -1,0 +1,1475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Long Video Finder</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #fff; --text: #1b1f24; --muted: #65707d; --line: #e2e5ea; --soft: #f0f2f5;
+    --accent: #c4302b; --accent-text: #fff; --ok: #1a7f37; --warn: #9a6700; --none: #8c959f; --err: #cf222e;
+    --heat: 196, 48, 43; --mark: #fff3b0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0f1216; --card: #171b21; --text: #e6e9ed; --muted: #95a0ab; --line: #2a3038; --soft: #1e232a;
+      --accent: #e5534b; --ok: #4ac26b; --warn: #d4a72c; --none: #6e7781; --err: #ff7b72; --heat: 229, 83, 75; --mark: #5c4a00; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Nirmala UI", sans-serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h3 { font-size: 15px; margin: 0 0 10px; }
+  .sub { color: var(--muted); margin: 0 0 16px; font-size: 14px; }
+  nav { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
+  nav button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; padding: 8px 14px; color: var(--muted); }
+  nav button.on { color: var(--text); border-bottom-color: var(--accent); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: end; }
+  label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+  label.check { flex-direction: row; align-items: center; gap: 6px; color: var(--text); font-size: 14px; }
+  input, select, textarea { font: inherit; padding: 7px 9px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--text); }
+  input[type=number] { width: 80px; }
+  input.q { min-width: 280px; flex: 1; }
+  textarea { width: 100%; min-height: 320px; font: 13px/1.4 ui-monospace, Consolas, monospace; }
+  button { font: inherit; font-weight: 600; padding: 8px 16px; border-radius: 6px; border: 1px solid var(--line);
+    background: var(--card); color: var(--text); cursor: pointer; }
+  button.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  button.small { padding: 2px 10px; font-size: 12px; font-weight: 500; }
+  button:disabled { opacity: .6; cursor: wait; }
+  details summary { cursor: pointer; color: var(--muted); font-size: 14px; }
+  .ch { display: grid; grid-template-columns: 1fr 2fr 1fr auto; gap: 8px; margin-top: 8px; }
+  .status { color: var(--muted); font-size: 14px; min-height: 21px; margin-bottom: 8px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .date-h { font-size: 16px; margin: 18px 0 6px; }
+  .result { display: grid; grid-template-columns: 140px 1fr; gap: 4px 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .k { color: var(--muted); font-size: 13px; }
+  .v { word-break: break-word; }
+  .chan { font-weight: 600; }
+  .dur { color: var(--ok); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .none { color: var(--none); font-style: italic; }
+  .note { color: var(--warn); font-size: 13px; }
+  .err { color: var(--err); }
+  .okc { color: var(--ok); }
+  a { color: var(--accent); }
+  .badge { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 10px; background: var(--soft); color: var(--muted); }
+  .badge.saved, .badge.have { color: var(--ok); }
+  .badge.error { color: var(--err); }
+  .files a { margin-right: 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 13px; white-space: nowrap; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .scroll { overflow-x: auto; }
+  .heat { text-align: center; font-variant-numeric: tabular-nums; min-width: 38px; font-size: 13px; }
+  .stock-link { cursor: pointer; color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+  .up { color: var(--ok); } .down { color: var(--err); }
+  .hit { padding: 10px 0; border-top: 1px solid var(--line); }
+  .hit .meta { font-size: 13px; color: var(--muted); margin-bottom: 2px; }
+  .hit .ctx { color: var(--muted); }
+  .hit .main { font-weight: 600; }
+  mark { background: var(--mark); color: inherit; padding: 0 2px; border-radius: 3px; }
+  pre.log { background: var(--soft); padding: 10px; border-radius: 6px; font-size: 13px; white-space: pre-wrap; max-height: 320px; overflow: auto; margin: 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .pill { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 10px; background: var(--soft); white-space: nowrap; }
+  .pill.target_hit, .pill.buy { color: var(--ok); }
+  .pill.sl_hit, .pill.sell { color: var(--err); }
+  .pill.open, .pill.closed_eod, .pill.expired { color: var(--warn); }
+  .quote { color: var(--muted); font-size: 13px; }
+  .sumcard h3 { margin-bottom: 4px; }
+  .sumcard ul { margin: 6px 0 12px; padding-left: 20px; }
+  .sumcard li { margin: 3px 0; }
+  .tlink { font-size: 12px; margin-right: 6px; font-variant-numeric: tabular-nums; }
+  .banner { padding: 10px 12px; border-radius: 8px; background: var(--soft); margin-bottom: 12px; font-size: 14px; }
+  .spark { display: block; }
+  .spark .px { stroke: var(--text); stroke-width: 1.5; fill: none; }
+  .spark .lt { stroke: var(--ok); stroke-dasharray: 3 2; }
+  .spark .ls { stroke: var(--err); stroke-dasharray: 3 2; }
+  .spark .le { stroke: var(--muted); stroke-dasharray: 1 2; }
+  .spark .hl { stroke: var(--muted); opacity: .35; }
+  .rank1 td { background: rgba(var(--heat), .08); }
+  .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, .45); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+  .modal-box { background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 20px; max-width: 520px; width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,.25); }
+  .modal-box p { margin: 0 0 10px; }
+  #mbUrls { min-height: 110px; }
+  #mbProgress { width: 100%; height: 8px; accent-color: var(--accent); margin-bottom: 8px; }
+  pre.log .err { color: var(--err); } pre.log .note { color: var(--warn); } pre.log .okc { color: var(--ok); } pre.log .dim { color: var(--muted); }
+  [hidden] { display: none !important; }
+  @media (max-width: 760px) {
+    .result { grid-template-columns: 1fr; }
+    .ch, .grid2 { grid-template-columns: 1fr; }
+    input.q { min-width: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Long Video Finder</h1>
+  <p class="sub">Zee Business First Trade and CNBC Awaaz: find long streams, save their subtitles, and search what was said.</p>
+
+  <nav id="tabs">
+    <button data-tab="find" class="on">Find &amp; download</button>
+    <button data-tab="members">Members-only</button>
+    <button data-tab="library">Library</button>
+    <button data-tab="search">Search</button>
+    <button data-tab="mentions">Stock mentions</button>
+    <button data-tab="calls">Calls</button>
+    <button data-tab="report">Analyst report</button>
+    <button data-tab="summaries">Summaries</button>
+    <button data-tab="daily">Daily auto-run</button>
+    <button data-tab="settings">Settings</button>
+  </nav>
+
+  <!-- FIND -->
+  <section id="tab-find">
+    <div class="card">
+      <div class="row">
+        <label>From <input type="date" id="from"></label>
+        <label>To <input type="date" id="to"></label>
+        <button type="button" id="today" title="Set From and To to today">Today</button>
+        <label>Min hours <input type="number" id="minHours" value="7" min="0" step="0.5"></label>
+        <label class="check"><input type="checkbox" id="requireDate" checked> Prefer title with the date</label>
+        <label class="check"><input type="checkbox" id="tradingOnly" checked> NSE trading days only</label>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="primary" id="collect">Find + download subtitles</button>
+        <button id="go">Find links only</button>
+        <label class="check"><input type="checkbox" id="redownload"> Re-download ones I already have</label>
+      </div>
+      <details style="margin-top:14px">
+        <summary>Channels and search queries</summary>
+        <div id="channels"></div>
+        <div style="margin-top:8px; display:flex; gap:8px">
+          <button id="addCh" type="button">Add channel</button>
+          <button id="resetCh" type="button">Reset to defaults</button>
+        </div>
+        <p class="sub" style="margin:8px 0 0">Use {date} in the query, e.g. "CNBC Awaaz {date}". "Channel contains" filters results by uploader name.</p>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Add videos by URL</h3>
+      <p class="sub" style="margin-bottom:10px">Paste YouTube links, one per line (watch, youtu.be or live links all work). Their subtitles go into your Library like the rest, whatever their length. Videos added here are never replaced by the automatic search.</p>
+      <textarea id="urls" rows="4" autocomplete="off" spellcheck="false" style="min-height:96px"
+        placeholder="https://www.youtube.com/watch?v=…&#10;https://youtu.be/…"></textarea>
+      <div class="row" style="margin-top:10px">
+        <label>Date <input type="date" id="urlDate"></label>
+        <label>Channel <select id="urlChannel"><option value="">From YouTube</option></select></label>
+        <button class="primary" id="urlGo">Download subtitles</button>
+        <span class="k" style="padding-bottom:8px">Leave Date empty to use the date in the video's title, else its YouTube publish date.</span>
+      </div>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="card" id="out" hidden>
+      <div class="actions">
+        <button id="copyAll">Copy all as text</button>
+        <button id="csv">Download CSV</button>
+        <button id="copyDs">Copy all DownSub links</button>
+        <button class="primary" id="zipTxt">Download all TXT</button>
+        <button id="zipSrt">Download all SRT</button>
+      </div>
+      <div id="results"></div>
+    </div>
+  </section>
+
+  <!-- MEMBERS-ONLY -->
+  <section id="tab-members" hidden>
+    <div class="banner" id="mbStatus">Checking the members-only helper…</div>
+    <div class="card" id="mbAccountCard">
+      <div class="row" style="align-items:center">
+        <div id="mbAccount" style="flex:1">Checking your YouTube sign-in…</div>
+        <button class="primary" id="mbSignIn" hidden>Sign in to YouTube</button>
+        <button id="mbSignOut" hidden>Switch account</button>
+      </div>
+      <p class="sub" id="mbAccountHelp" style="margin:8px 0 0" hidden>One time only: a separate Chrome window opens. Sign in with the account that has the
+        channel membership, then close that window. After that you only paste video URLs. The sign-in stays in this app's own browser profile on this PC
+        (data\youtube-browser) and is separate from your normal Chrome.</p>
+    </div>
+    <div class="card">
+      <label>Video URLs, one per line <textarea id="mbUrls" spellcheck="false" placeholder="https://www.youtube.com/watch?v=…"></textarea></label>
+      <div class="row" style="margin-top:12px">
+        <label>Language <select id="mbLanguage">
+          <option value="native">Native (original language)</option><option value="hi">Hindi</option><option value="en">English</option>
+          <option value="native,en">Native + English</option><option value="custom">Custom codes…</option>
+        </select></label>
+        <label id="mbCustomWrap" hidden>Codes <input type="text" id="mbCustom" placeholder="hi,en" style="width:120px" autocomplete="off"></label>
+      </div>
+      <details style="margin-top:14px">
+        <summary>No captions? Speech-to-text (Whisper)</summary>
+        <div class="row" style="margin-top:8px">
+          <label>When a video has no captions <select id="mbWhisperMode">
+            <option value="ask">Ask me</option><option value="auto">Always transcribe</option><option value="never">Never</option>
+          </select></label>
+          <label>Model <select id="mbWhisperModel"><option value="small">small (faster)</option><option value="medium">medium (better Hindi)</option></select></label>
+          <label>Output <select id="mbWhisperTask"><option value="transcribe">Original language</option><option value="translate">Translate to English</option></select></label>
+          <label class="check"><input type="checkbox" id="mbKeepAudio"> Keep the audio file</label>
+        </div>
+        <p class="sub" id="mbWhisperNote" style="margin:8px 0 0"></p>
+      </details>
+      <details style="margin-top:10px">
+        <summary>Advanced: sign-in source, yt-dlp update</summary>
+        <div class="row" style="margin-top:8px">
+          <label>Sign-in from <select id="mbCookiesMode">
+            <option value="app">This app's YouTube sign-in (recommended)</option><option value="file">A cookies.txt file</option>
+            <option value="firefox">Firefox (signed in)</option><option value="none">Nothing (public videos only)</option>
+          </select></label>
+          <label style="flex:1" id="mbPathWrap" hidden>cookies.txt path <input type="text" id="mbCookiesPath" autocomplete="off" spellcheck="false"></label>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <label class="check" id="mbDeleteWrap" hidden><input type="checkbox" id="mbDeleteCookies"> Delete cookies.txt after the run</label>
+          <button id="mbCheck">Check sign-in</button>
+          <button id="mbUpdate">Update yt-dlp</button>
+        </div>
+      </details>
+      <div class="row" style="margin-top:14px">
+        <button class="primary" id="mbDownload">Download transcripts</button>
+        <button id="mbList">List languages</button>
+        <button id="mbStop" hidden>Stop</button>
+        <button id="mbOpen">Open transcripts folder</button>
+      </div>
+      <p class="sub" style="margin:12px 0 0">Saved transcripts (.srt, clean .txt) go to the Library, so Search, Stock mentions and Calls include them.</p>
+    </div>
+    <div class="card" id="mbOut" hidden>
+      <div class="status" id="mbState"></div>
+      <progress id="mbProgress" max="1" value="0"></progress>
+      <pre class="log" id="mbLog"></pre>
+      <div id="mbResults" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section id="tab-library" hidden>
+    <div class="card">
+      <div class="actions" style="align-items:center">
+        <select id="libChannel"><option value="">All channels</option></select>
+        <span class="k" id="libCount"></span>
+        <button class="primary" id="libZipTxt">Download all TXT</button>
+        <button id="libZipSrt">Download all SRT</button>
+      </div>
+      <div class="scroll"><table>
+        <thead><tr><th>Date</th><th>Channel</th><th>Title</th><th class="num">Duration</th><th class="num">Lines</th><th>Subtitles</th><th>Links</th></tr></thead>
+        <tbody id="libBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- SEARCH -->
+  <section id="tab-search" hidden>
+    <div class="card">
+      <div class="row">
+        <label style="flex:1">Search (English or Hindi, or a stock like RELIANCE / TCS / जियो)
+          <input class="q" id="q" type="search" name="lvf-search" autocomplete="off" spellcheck="false" placeholder="e.g. Reliance, आईपीओ, target, Bank Nifty"></label>
+        <label>From <input type="date" id="sFrom"></label>
+        <label>To <input type="date" id="sTo"></label>
+        <label>Channel <select id="sChannel"><option value="">All</option></select></label>
+        <button class="primary" id="sGo">Search</button>
+      </div>
+    </div>
+    <div class="status" id="sStatus"></div>
+    <div class="card" id="sOut" hidden><div id="sResults"></div></div>
+  </section>
+
+  <!-- MENTIONS -->
+  <section id="tab-mentions" hidden>
+    <div class="card">
+      <div class="row">
+        <label>From <input type="date" id="mFrom"></label>
+        <label>To <input type="date" id="mTo"></label>
+        <label>Channel <select id="mChannel"><option value="">All</option></select></label>
+        <label>Show <select id="mType"><option value="stock">Stocks</option><option value="index">Indices</option><option value="">Both</option></select></label>
+        <button class="primary" id="mGo">Count mentions</button>
+      </div>
+    </div>
+    <div class="status" id="mStatus"></div>
+    <div class="card" id="mOut" hidden>
+      <p class="sub" style="margin-top:0">Click a name to read every mention with timestamps.</p>
+      <div class="scroll"><table id="mTable"></table></div>
+    </div>
+    <div class="card">
+      <h3>Improve accuracy</h3>
+      <p class="sub">Counts skip ads, jingles, show promos and sponsor credits (caption lines that air word-for-word on 3+ days), and a name
+        repeated within 10 seconds counts once. Captions misspell names and the watchlist can't know every stock, so these two
+        helpers suggest additions from your transcripts. Check the example line before you click Add: some sound-alikes are other words.</p>
+      <div class="row">
+        <label>Stock <select id="wsSymbol"></select></label>
+        <button id="wsSuggest">Suggest spellings</button>
+        <button id="wsUntracked">Find untracked stocks</button>
+      </div>
+      <div class="status" id="wsStatus" style="margin-top:8px"></div>
+      <div class="scroll"><table id="wsTable"></table></div>
+    </div>
+    <div class="card">
+      <details>
+        <summary>Edit watchlist (stocks and their spellings)</summary>
+        <p class="sub" style="margin-top:8px">Captions mix English and Hindi, so give each stock both spellings, e.g. "reliance" and "रिलायंस". Longer names win, so "tech mahindra" is not counted as "mahindra".</p>
+        <textarea id="wl" spellcheck="false"></textarea>
+        <div class="actions" style="margin-top:8px"><button class="primary" id="wlSave">Save watchlist</button><span class="status" id="wlStatus"></span></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- CALLS -->
+  <section id="tab-calls" hidden>
+    <div class="banner" id="aiBanner" hidden></div>
+    <div class="card">
+      <div class="row">
+        <label>From <input type="date" id="cFrom"></label>
+        <label>To <input type="date" id="cTo"></label>
+        <label>Channel <select id="cChannel"><option value="">All</option></select></label>
+        <label>Source <select id="cSource"><option value="ai" selected>AI (Claude or DeepSeek)</option><option value="rules">Built-in rules (free)</option></select></label>
+        <label>Action <select id="cAction"><option value="">All</option><option>buy</option><option>sell</option><option>hold</option><option>avoid</option></select></label>
+        <button class="primary" id="cGo">Show calls</button>
+        <button id="cAnalyze">Analyse missing transcripts…</button>
+      </div>
+      <div class="status" id="aiJob" style="margin:10px 0 0"></div>
+    </div>
+    <div class="status" id="cStatus"></div>
+    <div class="grid2" id="cScore" hidden>
+      <div class="card" id="scAnalystCard"><h3>Scorecard by analyst</h3><div class="scroll"><table id="scAnalyst"></table></div></div>
+      <div class="card"><h3>Scorecard by channel</h3><div class="scroll"><table id="scChannel"></table></div></div>
+    </div>
+    <div class="card" id="cOut" hidden>
+      <div class="actions"><button id="cCsv">Download CSV</button>
+        <span class="k">Entry is the price said on air, or that day's close if none was given. Daily prices only: a day that touched both target and stop-loss counts as stop-loss.</span></div>
+      <div class="scroll"><table id="cTable"></table></div>
+    </div>
+    <div class="card" id="rvOut" hidden>
+      <h3>Needs review</h3>
+      <p class="sub" id="rvNote"></p>
+      <div class="row">
+        <label>Show <select id="rvReason"></select></label>
+      </div>
+      <div class="status" id="rvStatus" style="margin-top:8px"></div>
+      <div class="scroll"><table id="rvTable"></table></div>
+    </div>
+  </section>
+
+  <!-- ANALYST REPORT -->
+  <section id="tab-report" hidden>
+    <div class="card">
+      <p class="sub" style="margin-top:0">Pick a week. The app downloads any missing transcripts for it, finds each analyst's calls, checks them on the NSE price charts, and ranks who would have made the most following their calls.</p>
+      <div class="row">
+        <label>Year <input type="number" id="rYear" min="2020" max="2100" style="width:90px"></label>
+        <label>Week <input type="number" id="rWeek" min="1" max="53" style="width:80px"></label>
+        <span class="k" id="rWeekDates" style="padding-bottom:8px"></span>
+        <label>or From <input type="date" id="rFrom"></label>
+        <label>To <input type="date" id="rTo"></label>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <label>Channel <select id="rChannel"><option value="">Both</option><option>Zee Business</option><option>CNBC Awaaz</option></select></label>
+        <label>Source <select id="rSource"><option value="ai" selected>AI (Claude or DeepSeek)</option><option value="rules">Built-in rules (free)</option></select></label>
+        <label class="check"><input type="checkbox" id="rFetch" checked> Download missing transcripts first</label>
+        <button class="primary" id="rGo">Build report</button>
+      </div>
+    </div>
+    <div class="status" id="rStatus"></div>
+    <div id="rOut" hidden>
+      <div class="card">
+        <h3>Verdict</h3>
+        <ul id="rVerdict" style="margin:0;padding-left:20px"></ul>
+      </div>
+      <div class="card">
+        <div class="actions" style="align-items:center">
+          <h3 style="margin:0">Ranking</h3>
+          <span class="k">Following each call with ₹10,000: exit at target or stop-loss, else valued at the latest close (max 20 trading days).</span>
+        </div>
+        <div class="scroll"><table id="rTable"></table></div>
+        <div class="actions" style="margin-top:12px">
+          <button id="rZip">Download this period's TXT files</button>
+          <button id="rCsv">Download calls CSV</button>
+        </div>
+      </div>
+      <div id="rDetails"></div>
+    </div>
+  </section>
+
+  <!-- SUMMARIES -->
+  <section id="tab-summaries" hidden>
+    <div class="card">
+      <div class="row">
+        <label>From <input type="date" id="yFrom"></label>
+        <label>To <input type="date" id="yTo"></label>
+        <label>Channel <select id="yChannel"><option value="">All</option></select></label>
+        <label>Source <select id="ySource"><option value="ai" selected>AI (Claude or DeepSeek)</option><option value="rules">Built-in rules (free)</option></select></label>
+        <button class="primary" id="yGo">Show summaries</button>
+        <button id="yAnalyze" hidden>Analyse missing transcripts…</button>
+      </div>
+      <div class="status" id="yJob" style="margin:10px 0 0"></div>
+    </div>
+    <div class="status" id="yStatus"></div>
+    <div id="yOut"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="tab-settings" hidden>
+    <div class="card">
+      <h3>AI provider</h3>
+      <p class="sub">Which AI reads the transcripts when you choose "AI" as the source on Calls and Summaries. Keys are stored only on this PC, in data/settings.json, and each is sent only to its own company.</p>
+      <div class="row">
+        <label>Provider <select id="aiProvider"><option value="claude">Claude (Anthropic)</option><option value="deepseek">DeepSeek</option></select></label>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Claude API key</h3>
+        <p class="sub">From console.anthropic.com → API Keys.</p>
+        <div class="row">
+          <label style="flex:1">API key <input type="password" id="apiKey" autocomplete="off" placeholder="sk-ant-…"></label>
+          <button class="primary" id="saveKey">Save key</button>
+          <button id="clearKey">Remove</button>
+        </div>
+        <div class="status" id="keyStatus" style="margin-top:8px"></div>
+      </div>
+      <div class="card">
+        <h3>DeepSeek API key</h3>
+        <p class="sub">From platform.deepseek.com → API keys.</p>
+        <div class="row">
+          <label style="flex:1">API key <input type="password" id="dsKey" autocomplete="off" placeholder="sk-…"></label>
+          <button class="primary" id="saveDsKey">Save key</button>
+          <button id="clearDsKey">Remove</button>
+        </div>
+        <div class="status" id="dsKeyStatus" style="margin-top:8px"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Model and cost</h3>
+      <div class="row">
+        <label>Model <select id="aiModel"></select></label>
+        <label>₹ per US$ <input type="number" id="usdToInr" step="0.5" style="width:90px"></label>
+        <label class="check"><input type="checkbox" id="autoAnalyze"> Analyse new transcripts in the daily run</label>
+        <button class="primary" id="saveAi">Save</button>
+      </div>
+      <p class="sub" style="margin-top:10px">A 9-hour stream is a long read. Use "Analyse missing transcripts" on the Calls tab to see the exact cost for your chosen model before anything runs.</p>
+      <div class="status" id="aiSaveStatus"></div>
+    </div>
+  </section>
+
+  <!-- DAILY -->
+  <section id="tab-daily" hidden>
+    <div class="grid2">
+      <div class="card">
+        <h3>Automatic daily run</h3>
+        <p class="sub">Every weekday at the set time, Windows runs the collector. It skips NSE holidays, saves that day's subtitles, and retries any of the last 10 days that are missing, so a day the PC was off still gets collected later. The PC must be on and logged in at that time.</p>
+        <div id="taskInfo" class="status">Loading…</div>
+        <div class="row">
+          <label>Time <input type="time" id="taskTime" value="20:30"></label>
+          <button class="primary" id="install">Turn on / update</button>
+          <button id="remove">Turn off</button>
+          <button id="runNow">Run now</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>NSE trading holidays</h3>
+        <div class="status" id="holSource"></div>
+        <div class="scroll" style="max-height:260px"><table><tbody id="holBody"></tbody></table></div>
+        <button class="small" id="holRefresh" style="margin-top:8px">Refresh from NSE</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Last run</h3>
+      <pre class="log" id="lastRun">No runs yet.</pre>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalText">
+  <div class="modal-box">
+    <div id="modalText"></div>
+    <div class="actions" style="margin:14px 0 0">
+      <button class="primary" id="modalYes">Yes</button>
+      <button id="modalNo">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+// In-page replacement for confirm()/alert(): the app's browser pane can block pop-up dialogs.
+// lines: array of paragraphs. Resolves true for Yes, false for Cancel/Escape.
+function askConfirm(lines, yes = 'Yes', no = 'Cancel') {
+  return new Promise(resolve => {
+    $('modalText').innerHTML = lines.map(l => `<p>${esc(l)}</p>`).join('');
+    $('modalYes').textContent = yes;
+    $('modalNo').textContent = no;
+    $('modalNo').hidden = !no;
+    $('modal').hidden = false;
+    $('modalYes').focus();
+    const done = v => { $('modal').hidden = true; document.removeEventListener('keydown', onKey); resolve(v); };
+    const onKey = e => { if (e.key === 'Escape') done(false); };
+    document.addEventListener('keydown', onKey);
+    $('modalYes').onclick = () => done(true);
+    $('modalNo').onclick = () => done(false);
+  });
+}
+const notice = text => askConfirm([text], 'OK', '');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+async function api(path, opts = {}) {
+  const res = await fetch(path, opts.body ? { method: opts.method || 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(opts.body) } : opts);
+  const text = await res.text();
+  let data;
+  try { data = JSON.parse(text); } catch {
+    // A 404 here means the page is newer than the running server (e.g. an old server window is still open).
+    throw new Error(res.status === 404
+      ? `The server at ${location.host} is an older version than this page. Double-click start.bat: it opens the new version`
+        + ' (on the next free port if this one is still taken). To free this port, end the old node.exe in Task Manager.'
+      : `Server error (HTTP ${res.status})`);
+  }
+  if (data.error) throw new Error(data.error);
+  return data;
+}
+async function copy(text, btn) {
+  await navigator.clipboard.writeText(text);
+  const old = btn.textContent; btn.textContent = 'Copied'; setTimeout(() => btn.textContent = old, 1200);
+}
+const fileLinks = e => `<span class="files"><a href="/files/${encodeURIComponent(e.file)}.srt">SRT</a><a href="/files/${encodeURIComponent(e.file)}.txt">TXT</a></span>`;
+
+// ---------- tabs ----------
+let library = [];
+const loaders = { members: loadMembersTab, library: loadLibraryTab, daily: loadDaily, mentions: loadWatchlist, settings: loadSettings, calls: loadCallsTab, summaries: loadSummariesTab, report: initReport };
+function show(tab) {
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  document.querySelectorAll('main > section').forEach(s => s.hidden = s.id !== 'tab-' + tab);
+  loaders[tab]?.();
+  try { localStorage.setItem('tab', tab); } catch {}
+}
+$('tabs').onclick = e => e.target.dataset.tab && show(e.target.dataset.tab);
+
+async function refreshLibrary() {
+  library = (await api('/api/library')).library;
+  const chans = [...new Set(library.map(e => e.channel))].sort();
+  for (const id of ['libChannel', 'sChannel', 'mChannel', 'cChannel', 'yChannel']) {
+    const sel = $(id), cur = sel.value;
+    sel.innerHTML = `<option value="">${id === 'libChannel' ? 'All channels' : 'All'}</option>` + chans.map(c => `<option>${esc(c)}</option>`).join('');
+    sel.value = cur;
+  }
+  if (library.length) {
+    const dates = library.map(e => e.iso).sort();
+    for (const id of ['sFrom', 'mFrom', 'cFrom', 'yFrom']) if (!$(id).value) $(id).value = dates[0];
+    for (const id of ['sTo', 'mTo', 'cTo', 'yTo']) if (!$(id).value) $(id).value = dates.at(-1);
+  }
+}
+
+// ---------- find ----------
+let defaults = [], rows = [];
+const yesterday = () => { const d = new Date(); d.setDate(d.getDate() - 1); return d.toLocaleDateString('en-CA'); };
+$('from').value = $('to').value = yesterday();
+
+function channelRow(c = { name: '', query: '', owner: '' }) {
+  const div = document.createElement('div');
+  div.className = 'ch';
+  div.innerHTML = `<input type="text" autocomplete="off" placeholder="Name"><input type="text" autocomplete="off" placeholder="Search query with {date}">
+    <input type="text" autocomplete="off" placeholder="Channel contains"><button type="button">Remove</button>`;
+  const [n, q, o] = div.querySelectorAll('input');
+  n.value = c.name; q.value = c.query; o.value = c.owner;
+  div.querySelector('button').onclick = () => div.remove();
+  $('channels').appendChild(div);
+}
+const renderChannels = list => { $('channels').innerHTML = ''; list.forEach(channelRow); };
+function readChannels() {
+  return [...$('channels').querySelectorAll('.ch')].map(d => {
+    const [n, q, o] = [...d.querySelectorAll('input')].map(i => i.value.trim());
+    return { name: n || o, query: q, owner: (o || n).toLowerCase() };
+  }).filter(c => c.query);
+}
+api('/api/defaults').then(d => { defaults = d.channels; renderChannels(defaults); fillUrlChannels(); });
+$('addCh').onclick = () => channelRow();
+$('resetCh').onclick = () => renderChannels(defaults);
+
+const findParams = () => ({ from: $('from').value, to: $('to').value || $('from').value, minHours: $('minHours').value,
+  requireDate: $('requireDate').checked, tradingDaysOnly: $('tradingOnly').checked, channels: readChannels(),
+  redownload: $('redownload').checked });
+
+const STATUS_LABEL = { saved: 'Subtitles saved', have: 'Already in library', 'no-video': 'No video', error: 'Problem' };
+function render() {
+  let html = '', last = '';
+  rows.forEach((r, i) => {
+    if (r.date !== last) { html += `<h2 class="date-h">${esc(r.date)}</h2>`; last = r.date; }
+    html += `<div class="result"><div class="k">Channel</div><div class="v chan">${esc(r.channel)}
+      ${r.status ? ` <span class="badge ${r.status}">${STATUS_LABEL[r.status]}</span>` : ''}</div>`;
+    if (!r.found) { html += `<div class="k">Result</div><div class="v none">${esc(r.message)}</div></div>`; return; }
+    const entry = r.entry || library.find(e => e.iso === r.iso && e.channel === r.channel && r.url === e.url);
+    html += `<div class="k">Video title</div><div class="v">${esc(r.title)}</div>
+      <div class="k">Duration</div><div class="v"><span class="dur">${esc(r.duration)}</span> <span class="k">${esc(r.published)}</span></div>
+      <div class="k">YouTube URL</div><div class="v"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url)}</a></div>
+      <div class="k">DownSub link</div><div class="v"><a href="${esc(r.downsub)}" target="_blank" rel="noopener">${esc(r.downsub)}</a> <button class="small" data-copy="${esc(r.downsub)}">Copy</button></div>
+      <div class="k">Subtitles</div><div class="v">${entry ? fileLinks(entry) + `<span class="k">${entry.lines.toLocaleString()} lines, ${entry.auto ? 'auto-generated ' : ''}${esc(entry.language)}</span>`
+        : `<button class="small" data-dl="${i}">Download subtitles</button>`}
+        ${r.error ? `<span class="err">${esc(r.error)}</span>` : ''}</div>
+      ${r.note ? `<div class="k">Note</div><div class="v note">${esc(r.note)}</div>` : ''}</div>`;
+  });
+  $('results').innerHTML = html;
+  $('out').hidden = !rows.length;
+}
+
+$('results').addEventListener('click', async e => {
+  const c = e.target.closest('[data-copy]');
+  if (c) return copy(c.dataset.copy, c);
+  const d = e.target.closest('[data-dl]');
+  if (!d) return;
+  const r = rows[d.dataset.dl];
+  d.disabled = true; d.textContent = 'Downloading…';
+  try { r.entry = (await api('/api/download', { body: { row: r } })).entry; r.status = 'saved'; r.error = ''; await refreshLibrary(); }
+  catch (err) { r.error = err.message; r.status = 'error'; }
+  render();
+});
+
+async function runFind(btn, collect) {
+  const p = findParams();
+  if (!p.from) return $('status').textContent = 'Pick a start date.';
+  document.querySelectorAll('#collect, #go').forEach(b => b.disabled = true);
+  $('status').textContent = collect ? 'Searching YouTube and downloading subtitles… (about 5 seconds per video)' : 'Searching YouTube…';
+  try {
+    if (collect) {
+      const data = await api('/api/collect', { body: p });
+      rows = data.results.map(x => x.row ? { ...x.row, status: x.status, entry: x.entry, error: x.error }
+        : { iso: x.iso, date: x.entry.date, channel: x.channel, found: true, ...x.entry, entry: x.entry, status: x.status });
+      const n = s => data.results.filter(r => r.status === s).length;
+      $('status').textContent = `Done: ${n('saved')} saved, ${n('have')} already had, ${n('no-video')} without a long video, ${n('error')} problems.`
+        + (data.log.some(l => l.includes('skipped')) ? ' Holidays and weekends were skipped.' : '');
+      if (!rows.length) $('status').textContent = 'No trading days in that range: ' + data.log.join('; ');
+      await refreshLibrary();
+    } else {
+      rows = (await api('/api/find', { body: p })).rows;
+      $('status').textContent = `Done: ${rows.filter(r => r.found).length} of ${rows.length} found.`;
+      if (!rows.length) $('status').textContent = 'No trading days in that range.';
+    }
+    render();
+  } catch (err) {
+    $('status').textContent = 'Error: ' + err.message;
+  } finally {
+    document.querySelectorAll('#collect, #go').forEach(b => b.disabled = false);
+  }
+}
+$('go').onclick = e => runFind(e.target, false);
+$('collect').onclick = e => runFind(e.target, true);
+
+$('today').onclick = () => { $('from').value = $('to').value = new Date().toLocaleDateString('en-CA'); };
+
+// ---------- add videos by URL ----------
+function fillUrlChannels() {
+  const sel = $('urlChannel'), cur = sel.value;
+  sel.innerHTML = '<option value="">From YouTube</option>' + readChannels().map(c => `<option>${esc(c.name)}</option>`).join('');
+  sel.value = [...sel.options].some(o => o.value === cur) ? cur : '';
+}
+$('urlChannel').onfocus = fillUrlChannels;
+$('urlGo').onclick = async () => {
+  const urls = $('urls').value.split(/[\s,]+/).map(s => s.trim()).filter(Boolean);
+  if (!urls.length) { $('status').textContent = 'Paste at least one YouTube link first.'; return; }
+  $('urlGo').disabled = true;
+  $('status').textContent = `Downloading subtitles for ${urls.length} link${urls.length === 1 ? '' : 's'}… (a few seconds each)`;
+  try {
+    const { results } = await api('/api/urls', { body: { urls, iso: $('urlDate').value, channel: $('urlChannel').value, channels: readChannels() } });
+    rows = results.map(r => r.status === 'saved'
+      ? { ...r.entry, found: true, status: 'saved', entry: r.entry, note: `Date ${fmtDay(r.entry.iso)}: ${r.entry.dateSource}.` }
+      : { date: 'Links that could not be downloaded', channel: r.url, found: false, status: 'error', message: r.error });
+    rows.sort((a, b) => (a.found === b.found ? 0 : a.found ? -1 : 1));
+    const ok = results.filter(r => r.status === 'saved').length;
+    $('status').textContent = `Done: ${ok} of ${results.length} saved to your Library.` + (ok < results.length ? ' See below for the ones that failed.' : '');
+    if (ok === results.length) $('urls').value = '';
+    render();
+    refreshLibrary();
+  } catch (err) { $('status').textContent = 'Error: ' + err.message; }
+  finally { $('urlGo').disabled = false; }
+};
+
+function asText() {
+  let out = '', last = '';
+  for (const r of rows) {
+    if (r.date !== last) { out += `\n${r.date}\n`; last = r.date; }
+    out += `\n${r.channel}\n`;
+    if (!r.found) { out += `  ${r.message}\n`; continue; }
+    out += `  Title: ${r.title}\n  Duration: ${r.duration}\n  YouTube: ${r.url}\n  DownSub: ${r.downsub}\n`;
+  }
+  return out.trim();
+}
+$('copyAll').onclick = e => copy(asText(), e.target);
+$('copyDs').onclick = e => copy(rows.filter(r => r.found).map(r => r.downsub).join('\n'), e.target);
+
+// Zips the given transcripts on the server and saves one file.
+async function downloadZip(entries, ext, btn) {
+  const files = entries.filter(Boolean).map(e => e.file);
+  if (!files.length) { notice('No saved subtitles here yet. Use "Find + download subtitles" first.'); return; }
+  const old = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Zipping…';
+  try {
+    const res = await fetch('/api/zip', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ files, ext }) });
+    if (!res.ok) throw new Error((await res.json()).error);
+    const isos = entries.filter(Boolean).map(e => e.iso).sort();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(await res.blob());
+    a.download = `subtitles_${ext}_${isos[0]}_to_${isos.at(-1)}.zip`;
+    a.click();
+  } catch (err) { notice('Download failed: ' + err.message); }
+  finally { btn.disabled = false; btn.textContent = old; }
+}
+const rowEntries = () => rows.map(r => r.entry || library.find(e => e.iso === r.iso && e.channel === r.channel && e.url === r.url));
+$('zipTxt').onclick = e => downloadZip(rowEntries(), 'txt', e.target);
+$('zipSrt').onclick = e => downloadZip(rowEntries(), 'srt', e.target);
+const libEntries = () => library.filter(e => !$('libChannel').value || e.channel === $('libChannel').value);
+$('libZipTxt').onclick = e => downloadZip(libEntries(), 'txt', e.target);
+$('libZipSrt').onclick = e => downloadZip(libEntries(), 'srt', e.target);
+function downloadCsv(name, header, data) {
+  const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const lines = [header.map(q).join(','), ...data.map(r => r.map(q).join(','))];
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv' }));
+  a.download = name; a.click();
+}
+$('csv').onclick = () => downloadCsv(`videos_${$('from').value}_${$('to').value}.csv`,
+  ['Date', 'Channel', 'Video Title', 'Duration', 'YouTube URL', 'DownSub Link'],
+  rows.map(r => [r.date, r.channel, r.found ? r.title : r.message, r.duration, r.url, r.downsub]));
+
+// ---------- library ----------
+async function loadLibraryTab() {
+  await refreshLibrary();
+  renderLibrary();
+}
+function renderLibrary() {
+  const ch = $('libChannel').value;
+  const list = library.filter(e => !ch || e.channel === ch);
+  $('libCount').textContent = `${list.length} transcript${list.length === 1 ? '' : 's'}`;
+  $('libBody').innerHTML = list.map(e => `<tr><td style="white-space:nowrap">${esc(e.iso)}</td><td>${esc(e.channel)}</td>
+    <td>${esc(e.title)}</td><td class="num">${esc(e.duration)}</td><td class="num">${e.lines.toLocaleString()}</td>
+    <td>${fileLinks(e)}</td><td class="files"><a href="${esc(e.url)}" target="_blank" rel="noopener">YouTube</a><a href="${esc(e.downsub)}" target="_blank" rel="noopener">DownSub</a></td></tr>`).join('')
+    || `<tr><td colspan="7" class="none">Nothing yet. Use "Find + download subtitles".</td></tr>`;
+}
+$('libChannel').onchange = renderLibrary;
+
+// ---------- search ----------
+function highlight(text, q, stock) {
+  const t = esc(text);
+  if (stock) return `<mark>${t}</mark>`;
+  const i = t.toLowerCase().indexOf(esc(q).toLowerCase());
+  return i < 0 ? t : t.slice(0, i) + '<mark>' + t.slice(i, i + esc(q).length) + '</mark>' + t.slice(i + esc(q).length);
+}
+async function runSearch() {
+  const q = $('q').value.trim();
+  if (!q) return;
+  $('sStatus').textContent = 'Searching…';
+  try {
+    const p = new URLSearchParams({ q, from: $('sFrom').value, to: $('sTo').value, channel: $('sChannel').value });
+    const d = await api('/api/search?' + p);
+    $('sStatus').textContent = `${d.total} mention${d.total === 1 ? '' : 's'} in ${d.transcripts} transcript${d.transcripts === 1 ? '' : 's'}`
+      + (d.stock ? ` (matched ${d.stock.name}, all spellings from the watchlist)` : '') + (d.shown < d.total ? `, showing first ${d.shown}` : '');
+    let html = '', last = '';
+    for (const h of d.hits) {
+      const head = `${h.date} · ${h.channel}`;
+      if (head !== last) { html += `<h2 class="date-h">${esc(head)}</h2>`; last = head; }
+      html += `<div class="hit"><div class="meta"><a href="${esc(h.link)}" target="_blank" rel="noopener">▶ ${esc(h.time)}</a></div>
+        <span class="ctx">${esc(h.before)}</span> <span class="main">${highlight(h.text, q, d.stock)}</span> <span class="ctx">${esc(h.after)}</span></div>`;
+    }
+    $('sResults').innerHTML = html || '<p class="none">No matches.</p>';
+    $('sOut').hidden = false;
+  } catch (err) { $('sStatus').textContent = 'Error: ' + err.message; }
+}
+$('sGo').onclick = runSearch;
+// Must not return false: from an on-key handler that cancels the key, so nothing could be typed.
+$('q').addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
+
+// ---------- mentions ----------
+async function runMentions() {
+  $('mStatus').textContent = 'Counting…';
+  try {
+    const p = new URLSearchParams({ from: $('mFrom').value, to: $('mTo').value, channel: $('mChannel').value, type: $('mType').value });
+    const d = await api('/api/mentions?' + p);
+    $('mStatus').textContent = `${d.stocks.length} names mentioned across ${d.transcripts} transcript${d.transcripts === 1 ? '' : 's'}.`;
+    const showDates = d.dates.length > 1 && d.dates.length <= 31;
+    const max = Math.max(1, ...d.stocks.flatMap(s => Object.values(s.byDate)));
+    let html = `<thead><tr><th>#</th><th>Name</th><th class="num">Total</th>${d.channels.map(c => `<th class="num">${esc(c)}</th>`).join('')}
+      ${d.dates.length > 1 ? '<th class="num">vs prev day</th>' : ''}
+      ${showDates ? d.dates.map(x => `<th class="heat">${esc(x.slice(8))}/${esc(x.slice(5, 7))}</th>`).join('') : ''}</tr></thead><tbody>`;
+    d.stocks.forEach((s, i) => {
+      const ch = s.change ?? null;
+      html += `<tr><td class="k">${i + 1}</td><td><span class="stock-link" data-sym="${esc(s.symbol)}">${esc(s.name)}</span> <span class="k">${esc(s.symbol)}</span></td>
+        <td class="num"><b>${s.total}</b></td>${d.channels.map(c => `<td class="num">${s.byChannel[c] || ''}</td>`).join('')}
+        ${d.dates.length > 1 ? `<td class="num ${ch > 0 ? 'up' : ch < 0 ? 'down' : ''}">${ch > 0 ? '+' : ''}${ch ?? ''}</td>` : ''}
+        ${showDates ? d.dates.map(x => { const n = s.byDate[x] || 0;
+          return `<td class="heat" style="background:rgba(var(--heat),${n ? 0.12 + 0.6 * n / max : 0})">${n || ''}</td>`; }).join('') : ''}</tr>`;
+    });
+    $('mTable').innerHTML = html + '</tbody>';
+    $('mOut').hidden = false;
+  } catch (err) { $('mStatus').textContent = 'Error: ' + err.message; }
+}
+$('mGo').onclick = runMentions;
+$('mTable').onclick = e => {
+  const s = e.target.closest('[data-sym]');
+  if (!s) return;
+  $('q').value = s.dataset.sym;
+  $('sFrom').value = $('mFrom').value; $('sTo').value = $('mTo').value; $('sChannel').value = $('mChannel').value;
+  show('search'); runSearch();
+};
+const showWatchlist = wl => {
+  $('wl').value = '[\n' + wl.map(s => '  ' + JSON.stringify(s)).join(',\n') + '\n]';
+  const cur = $('wsSymbol').value;
+  $('wsSymbol').innerHTML = wl.filter(s => s.type === 'stock').sort((a, b) => a.name.localeCompare(b.name))
+    .map(s => `<option value="${esc(s.symbol)}">${esc(s.name)} (${esc(s.symbol)})</option>`).join('');
+  if (cur) $('wsSymbol').value = cur;
+};
+async function loadWatchlist() {
+  if ($('wl').value) return;
+  showWatchlist((await api('/api/watchlist')).watchlist);
+}
+
+// ---------- watchlist helpers ----------
+let wsRows = [];
+async function addToWatchlist(change) {
+  const wl = (await api('/api/watchlist')).watchlist;
+  change(wl);
+  await api('/api/watchlist', { method: 'PUT', body: { watchlist: wl } });
+  showWatchlist(wl);
+}
+const wsExample = r => r.examples?.length ? `<div class="quote">…${esc(r.examples[0])}…</div>` : '';
+$('wsSuggest').onclick = async () => {
+  const sym = $('wsSymbol').value;
+  $('wsStatus').textContent = 'Looking for other spellings in all transcripts…';
+  $('wsTable').innerHTML = '';
+  try {
+    const d = await api('/api/watchlist/suggest?symbol=' + encodeURIComponent(sym));
+    wsRows = d.suggestions.map(s => ({ kind: 'spelling', symbol: sym, ...s }));
+    $('wsStatus').textContent = wsRows.length ? `${d.name}: spellings in the captions that sound like it but aren't counted yet.`
+      : `${d.name}: no other spellings found.`;
+    $('wsTable').innerHTML = wsRows.length ? '<thead><tr><th>Spelling</th><th class="num">Times</th><th class="num">Business context</th><th>Example</th><th></th></tr></thead><tbody>' +
+      wsRows.map((r, i) => `<tr><td><b>${esc(r.spelling)}</b>${r.everyday ? ' <span class="badge">common word</span>' : ''}</td><td class="num">${r.count}</td>
+        <td class="num">${r.business}%</td><td>${wsExample(r)}</td><td><button class="small" data-ws="${i}">Add</button></td></tr>`).join('') + '</tbody>' : '';
+  } catch (e) { $('wsStatus').textContent = 'Error: ' + e.message; }
+};
+$('wsUntracked').onclick = async () => {
+  $('wsStatus').textContent = 'Matching every NSE company against the transcripts… (can take a few seconds)';
+  $('wsTable').innerHTML = '';
+  try {
+    const d = await api('/api/watchlist/untracked');
+    wsRows = d.stocks.map(s => ({ kind: 'stock', ...s }));
+    $('wsStatus').textContent = wsRows.length ? `${wsRows.length} NSE companies sound like words in the captions but aren't tracked. Some are coincidences (names of anchors, everyday words): check the example.`
+      : 'No untracked stocks found.';
+    $('wsTable').innerHTML = wsRows.length ? '<thead><tr><th>Company</th><th>Heard as</th><th class="num">Times</th><th class="num">Business context</th><th>Example</th><th></th></tr></thead><tbody>' +
+      wsRows.map((r, i) => `<tr><td><b>${esc(r.name)}</b> <span class="k">${esc(r.symbol)}</span></td>
+        <td>${esc(r.spellings.slice(0, 4).map(s => `${s.spelling} ×${s.count}`).join(', '))}</td><td class="num">${r.count}</td>
+        <td class="num">${r.business}%</td><td>${wsExample(r)}</td><td><button class="small" data-ws="${i}">Add</button></td></tr>`).join('') + '</tbody>' : '';
+  } catch (e) { $('wsStatus').textContent = 'Error: ' + e.message; }
+};
+$('wsTable').onclick = async e => {
+  const btn = e.target.closest('[data-ws]');
+  if (!btn) return;
+  const r = wsRows[Number(btn.dataset.ws)];
+  btn.disabled = true;
+  try {
+    await addToWatchlist(wl => {
+      if (r.kind === 'spelling') wl.find(s => s.symbol === r.symbol).aliases.push(r.spelling);
+      else wl.push({ symbol: r.symbol, name: r.name, type: 'stock', aliases: r.spellings.slice(0, 4).map(s => s.spelling) });
+    });
+    btn.textContent = 'Added';
+  } catch (err) { btn.disabled = false; $('wsStatus').textContent = 'Not added: ' + err.message; }
+};
+$('wlSave').onclick = async () => {
+  try {
+    await api('/api/watchlist', { method: 'PUT', body: { watchlist: JSON.parse($('wl').value) } });
+    $('wlStatus').textContent = 'Saved.';
+  } catch (err) { $('wlStatus').textContent = 'Not saved: ' + err.message; }
+};
+
+// ---------- daily ----------
+async function loadDaily() {
+  try {
+    const s = await api('/api/schedule');
+    const t = s.task;
+    $('taskInfo').innerHTML = t.installed
+      ? `<span class="okc">On.</span> Runs Mon–Fri at ${esc((t.time || '').slice(0, 5))}. Next run: ${esc(t.nextRun)}. Last run: ${/1999|N\/A/.test(t.lastRun || 'N/A') ? 'not yet' : esc(t.lastRun)}.`
+      : `<span class="err">Off.</span> Choose a time and click "Turn on".`;
+    if (t.installed && t.time) $('taskTime').value = t.time.slice(0, 5);
+    $('lastRun').textContent = s.running ? 'Running now…' : s.lastRun ? s.lastRun.lines.join('\n') : 'No runs yet.';
+  } catch (err) { $('taskInfo').textContent = 'Error: ' + err.message; }
+  loadHolidays();
+}
+async function loadHolidays(refresh) {
+  const h = await api('/api/holidays' + (refresh ? '?refresh=1' : ''));
+  $('holSource').textContent = `Source: ${h.source}` + (h.fetchedAt ? `, updated ${new Date(h.fetchedAt).toLocaleDateString('en-IN')}` : '');
+  const today = new Date().toLocaleDateString('en-CA');
+  $('holBody').innerHTML = Object.entries(h.holidays).sort().map(([d, n]) =>
+    `<tr style="${d < today ? 'opacity:.5' : ''}"><td style="white-space:nowrap">${esc(new Date(d + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }))}</td><td>${esc(n)}</td></tr>`).join('');
+}
+async function scheduleAction(action, btn) {
+  btn.disabled = true;
+  if (action === 'run-now') $('lastRun').textContent = 'Running… this checks the last 10 days and can take a minute.';
+  try { await api('/api/schedule', { body: { action, time: $('taskTime').value } }); }
+  catch (err) { $('taskInfo').innerHTML = `<span class="err">${esc(err.message)}</span>`; btn.disabled = false; return; }
+  btn.disabled = false;
+  await loadDaily();
+  if (action === 'run-now') refreshLibrary();
+}
+$('install').onclick = e => scheduleAction('install', e.target);
+$('remove').onclick = e => scheduleAction('remove', e.target);
+$('runNow').onclick = e => scheduleAction('run-now', e.target);
+$('holRefresh').onclick = () => loadHolidays(true);
+
+// ---------- settings ----------
+let settings = null;
+const keyText = k => k.hasKey ? `<span class="okc">Key saved</span> (ending ${esc(k.keyHint)})` : '<span class="err">No key saved yet.</span>';
+function fillModels() {
+  const prov = $('aiProvider').value;
+  $('aiModel').innerHTML = Object.entries(settings.models).filter(([, m]) => m.provider === prov).map(([id, m]) =>
+    `<option value="${id}">${esc(m.label)}: $${m.input} in / $${m.output} out per million tokens${prov === 'deepseek' ? ' (peak; half off-peak)' : ''}</option>`).join('');
+  $('aiModel').value = prov === 'deepseek' ? settings.deepseekModel : settings.model;
+}
+async function loadSettings() {
+  settings = await api('/api/settings');
+  $('aiProvider').value = settings.provider;
+  fillModels();
+  $('usdToInr').value = settings.usdToInr;
+  $('autoAnalyze').checked = settings.autoAnalyze;
+  $('keyStatus').innerHTML = keyText(settings.claude);
+  $('dsKeyStatus').innerHTML = keyText(settings.deepseek);
+  return settings;
+}
+async function saveKey(input, status, field) {
+  const k = $(input).value.trim();
+  if (!k) { $(status).innerHTML = '<span class="err">Paste the key into the box first.</span>'; return; }
+  try {
+    await api('/api/settings', { method: 'PUT', body: { [field]: k } });
+    $(input).value = '';
+    await loadSettings();
+  } catch (err) { $(status).innerHTML = `<span class="err">Not saved: ${esc(err.message)}</span>`; }
+}
+$('saveKey').onclick = () => saveKey('apiKey', 'keyStatus', 'apiKey');
+$('saveDsKey').onclick = () => saveKey('dsKey', 'dsKeyStatus', 'deepseekKey');
+$('clearKey').onclick = async () => { await api('/api/settings', { method: 'PUT', body: { clearKey: true } }); loadSettings(); };
+$('clearDsKey').onclick = async () => { await api('/api/settings', { method: 'PUT', body: { clearDeepseekKey: true } }); loadSettings(); };
+$('aiProvider').onchange = async () => {
+  await api('/api/settings', { method: 'PUT', body: { provider: $('aiProvider').value } });
+  await loadSettings();
+};
+$('saveAi').onclick = async () => {
+  const m = $('aiModel').value;
+  await api('/api/settings', { method: 'PUT', body: { [settings.models[m].provider === 'deepseek' ? 'deepseekModel' : 'model']: m,
+    usdToInr: $('usdToInr').value, autoAnalyze: $('autoAnalyze').checked } });
+  $('aiSaveStatus').textContent = 'Saved.';
+  loadSettings();
+};
+
+// ---------- AI job (shared by Calls and Summaries) ----------
+let jobTimer = null;
+// Progress shows on both the Calls and Summaries tabs.
+const jobBoxes = () => [$('aiJob'), $('yJob')];
+async function pollJob() {
+  const { job } = await api('/api/ai/job');
+  if (!job) { jobBoxes().forEach(b => b.textContent = ''); return; }
+  const cost = `about $${fx(job.costUsd, 3)} (₹${fx((job.costUsd || 0) * (settings?.usdToInr || 88), 1)})`;
+  const html = job.running
+    ? `Analysing ${job.done + 1} of ${job.total}: ${esc(job.current)}, part ${esc(job.part || '…')}. Spent so far ${cost}.`
+    : `Analysis finished: ${job.done} of ${job.total} done, ${cost}.` + (job.errors.length ? `<br><span class="err">${job.errors.map(esc).join('<br>')}</span>` : '');
+  jobBoxes().forEach(b => b.innerHTML = html);
+  clearTimeout(jobTimer);
+  if (job.running) jobTimer = setTimeout(pollJob, 3000);
+  else if (job.finishedAt && Date.now() - job.finishedAt < 10000) { runCalls(); runSummaries(); }
+}
+
+// Number formatting that never throws: a missing value shows as "–".
+function fx(n, digits = 2) { return Number.isFinite(Number(n)) && n !== null ? Number(n).toFixed(digits) : '–'; }
+
+// Asks the user to confirm the AI cost for the transcripts not yet analysed in a range.
+// Returns the list it started, [] if nothing was missing, or null if the user said no.
+async function confirmAndStartAnalysis(from, to, channel, box) {
+  await loadSettings();
+  const { pending } = await api('/api/ai/pending?' + new URLSearchParams({ from, to, channel }));
+  if (!pending.length) return [];
+  box.textContent = `Working out the AI cost for ${pending.length} transcript(s) not read yet…`;
+  const est = await api('/api/ai/estimate', { body: { files: pending } });
+  const note = est.approximate
+    ? 'DeepSeek has no token counter, so this is an estimate from the text length' + (est.offPeak ? ', at off-peak (half) prices.' : ', at peak prices.')
+    : 'The estimate counts the real input; output is approximate.';
+  const ok = await askConfirm([
+    `${pending.length} transcript(s) in this range have not been read by the AI yet.`,
+    `Analyse them with ${settings.models[est.model]?.label || est.model}? Input about ${fx(est.inputTokens / 1e6, 2)} million tokens, estimated cost $${fx(est.usd, 3)} (about ₹${fx(est.inr, 1)}).`,
+    `${note} A 9-hour stream takes about 3–5 minutes. You can pick a cheaper model in Settings.`,
+  ], `Analyse ${pending.length} for about ₹${fx(est.inr, 0)}`, 'Not now');
+  box.textContent = '';
+  if (!ok) return null;
+  // Only one analysis runs at a time: wait for one already running, then start ours.
+  const { job } = await api('/api/ai/job');
+  if (job?.running) {
+    box.textContent = 'Another analysis is running; yours starts as soon as it finishes…';
+    await waitForJob(box, 'Waiting for the analysis already running: ');
+  }
+  const { pending: still } = await api('/api/ai/pending?' + new URLSearchParams({ from, to, channel }));
+  if (!still.length) return [];
+  await api('/api/ai/analyze', { body: { files: still } });
+  return still;
+}
+
+// " 9 of 10 transcripts in this range are in your library but not read by the AI yet …" (or '' when none).
+async function aiPendingNote(from, to, channel) {
+  try {
+    const { pending, total } = await api('/api/ai/pending?' + new URLSearchParams({ from, to, channel }));
+    if (!total) return ' There are no transcripts in your library for these dates; download them on Find & download first.';
+    if (!pending.length) return '';
+    return ` ${pending.length} of ${total} transcripts in this range are in your library but have not been read by the AI yet. Click "Analyse missing transcripts…" to see the cost and analyse them.`;
+  } catch { return ''; }
+}
+
+// Waits for the running AI job, showing progress in `box`.
+async function waitForJob(box, prefix = '') {
+  for (;;) {
+    const { job } = await api('/api/ai/job');
+    if (!job) return null;
+    box.innerHTML = job.running
+      ? `${esc(prefix)}AI is reading transcript ${job.done + 1} of ${job.total} (${esc(job.current)}, part ${esc(job.part || '…')}). Spent so far about $${fx(job.costUsd, 3)}. A 9-hour stream takes about 3–5 minutes.`
+      : '';
+    if (!job.running) return job;
+    await new Promise(r => setTimeout(r, 3000));
+  }
+}
+
+// Calls and Summaries buttons: confirm, start, and show progress (results refresh when it finishes).
+async function analyseMissing(from, to, channel, box, btn) {
+  btn.disabled = true;
+  try {
+    const started = await confirmAndStartAnalysis(from, to, channel, box);
+    if (started && !started.length) box.textContent = 'Every transcript in this range is already analysed.';
+    if (started?.length) pollJob();
+  } catch (err) { box.innerHTML = `<span class="err">${esc(err.message)}</span>`; }
+  finally { btn.disabled = false; }
+}
+
+function syncSource() {
+  const ai = $('cSource').value === 'ai';
+  $('cAnalyze').hidden = !ai;
+  $('aiJob').hidden = !ai;
+  $('scAnalystCard').hidden = !ai; // the rules can't tell who made a call
+  $('aiBanner').hidden = !ai || !!settings?.hasKey;
+}
+$('cSource').onchange = () => { syncSource(); runCalls(); };
+async function loadCallsTab() {
+  await loadSettings().catch(() => {});
+  syncSource();
+  $('aiBanner').innerHTML = 'AI calls need an API key for your chosen provider. Add it in the <a href="#" id="toSettings">Settings</a> tab first.';
+  const t = $('toSettings'); if (t) t.onclick = e => { e.preventDefault(); show('settings'); };
+  pollJob();
+  runCalls();
+}
+
+$('cAnalyze').onclick = e => analyseMissing($('cFrom').value, $('cTo').value, $('cChannel').value, $('aiJob'), e.target);
+
+// ---------- calls ----------
+let calls = [];
+const STATUS_TEXT = { target_hit: 'Target hit', sl_hit: 'Stop-loss hit', open: 'Open', closed_eod: 'Closed at day end',
+  no_price: 'No price yet', no_symbol: 'Stock not matched', not_tradable: '–', levels_passed: 'Levels already passed', expired: 'No hit in 20 days', levels_mismatch: 'Prices do not match stock' };
+const fmtPct = v => v == null ? '' : `<span class="${v > 0 ? 'up' : v < 0 ? 'down' : ''}">${v > 0 ? '+' : ''}${v}%</span>`;
+const num = v => v == null ? '' : Number(v).toLocaleString('en-IN');
+async function runCalls() {
+  $('cStatus').textContent = 'Loading calls and NSE prices… (the first time can take a minute)';
+  try {
+    const p = new URLSearchParams({ from: $('cFrom').value, to: $('cTo').value, channel: $('cChannel').value, source: $('cSource').value,
+      reason: $('rvReason').value });
+    callsData = await api('/api/calls?' + p);
+    callsNote = $('cSource').value === 'ai' ? await aiPendingNote($('cFrom').value, $('cTo').value, $('cChannel').value) : '';
+    renderCalls();
+    renderReview();
+  } catch (err) { $('cStatus').textContent = 'Error: ' + err.message; }
+}
+
+// ---------- calls the rules couldn't fully understand ----------
+const RV_LIKELY = '';
+const RV_SHORT = { no_price: 'No price understood', no_direction: 'No buy/sell said', no_stock: 'No stock recognised',
+  price_mismatch: "Levels don't fit the stock's price", index: 'Nifty / Bank Nifty levels', commodity: 'Commodity levels',
+  option: 'Options trades', past: 'Earlier calls talked about', repeated_segment: 'Promos / re-aired segments', levels_on_screen: 'Levels shown on screen' };
+function renderReview() {
+  const rv = callsData?.review;
+  $('rvOut').hidden = !rv || !rv.total;
+  if (!rv || !rv.total) return;
+  $('rvNote').textContent = `Nothing is dropped silently: these ${rv.total} call-like statements weren't turned into calls, each with the reason. ` +
+    'Open ▶ to hear it. "Likely calls" are those with a buy/sell said and a target or stop-loss.';
+  const cur = $('rvReason').value;
+  $('rvReason').innerHTML = `<option value="${RV_LIKELY}">Likely calls (${rv.likely})</option>` +
+    Object.entries(rv.reasons).filter(([k]) => rv.counts[k]).map(([k, label]) =>
+      `<option value="${esc(k)}">${esc(RV_SHORT[k] || label)} (${rv.counts[k]})</option>`).join('') +
+    `<option value="all">Everything (${rv.total})</option>`;
+  $('rvReason').value = cur;
+  $('rvStatus').textContent = `Showing ${rv.shown} of ${rv.matching}${rv.shown < rv.matching ? ' (most likely calls first)' : ''}.`;
+  $('rvTable').innerHTML = `<thead><tr><th>Date</th><th>Time</th><th>Channel</th><th>Why not a call</th><th>Said</th><th class="num">Target</th><th class="num">SL</th><th>Heard</th></tr></thead><tbody>` +
+    rv.items.map(r => `<tr><td style="white-space:nowrap">${esc(r.iso)}</td><td><a href="${esc(r.link)}" target="_blank" rel="noopener">▶ ${esc(r.time)}</a></td>
+      <td>${esc(r.channel)}${r.analyst ? `<div class="k">${esc(r.analyst)}</div>` : ''}</td>
+      <td class="k" style="max-width:220px">${esc(rv.reasons[r.reason] || r.reason)}</td>
+      <td>${r.action ? `<span class="pill ${esc(r.action)}">${esc(r.action)}</span>` : ''}<div class="quote">${esc(r.quote)}</div></td>
+      <td class="num">${num(r.target)}</td><td class="num">${num(r.stop_loss)}</td>
+      <td>${(r.candidates || []).map(c => `${esc(c.name)}${c.close ? ` <span class="k">₹${num(c.close)}</span>` : ''}`).join('<br>') || (r.commodity ? esc(r.commodity) : '')}</td></tr>`).join('') + '</tbody>';
+}
+$('rvReason').onchange = runCalls;
+
+// Draws the loaded calls; the buy/sell filter re-draws instantly without reloading prices.
+let callsData = null, callsNote = '';
+function renderCalls() {
+  try {
+    const d = callsData;
+    if (!d) return;
+    const act = $('cAction').value;
+    calls = d.calls.filter(c => !act || c.action === act);
+    const ai = $('cSource').value === 'ai';
+    $('cStatus').textContent = (calls.length ? `${calls.length} call${calls.length === 1 ? '' : 's'}` + (ai ? ' found by AI.' : ' found by the built-in rules. They catch calls said with a target or stop-loss; open the ▶ link to check one. Anything they couldn\'t read is listed under "Needs review" below.')
+      : ai ? 'No AI calls yet in this range.' : 'No calls found in this range.') + callsNote;
+    const sc = rows => `<thead><tr><th>Name</th><th class="num">Calls</th><th class="num">Hit rate</th><th class="num">Target / SL</th><th class="num">Avg 5-day</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${esc(r.name)}</td><td class="num">${r.calls}</td><td class="num">${r.hitRate == null ? '' : r.hitRate + '%'}</td>
+        <td class="num">${r.targetHit} / ${r.slHit}</td><td class="num">${fmtPct(r.avg5d)}${r.n5d ? ` <span class="k">(${r.n5d})</span>` : ''}</td></tr>`).join('') + '</tbody>';
+    $('scAnalyst').innerHTML = sc(d.scorecard.byAnalyst);
+    $('scChannel').innerHTML = sc(d.scorecard.byChannel);
+    $('cScore').hidden = !calls.length;
+    syncSource();
+    $('cTable').innerHTML = `<thead><tr><th>Date</th><th>Time</th><th>Channel</th><th>Analyst</th><th>Stock</th><th>Action</th>
+      <th class="num">Entry</th><th class="num">Target</th><th class="num">SL</th><th>Timeframe</th><th>Result</th>
+      <th class="num">1d</th><th class="num">5d</th><th class="num">20d</th><th class="num">Now</th></tr></thead><tbody>` +
+      calls.map(c => `<tr><td style="white-space:nowrap">${esc(c.iso)}</td><td><a href="${esc(c.link)}" target="_blank" rel="noopener">▶ ${esc(c.time)}</a></td>
+        <td>${esc(c.channel)}</td><td>${esc(c.analyst || '')}</td>
+        <td><b>${esc(c.stock)}</b> <span class="k">${esc(c.symbol || '')}</span><div class="quote">${esc(c.quote)}</div></td>
+        <td><span class="pill ${esc(c.action)}">${esc(c.action)}</span></td>
+        <td class="num">${num(c.entry ?? c.eval.entryUsed)}${c.entry == null && c.eval.entryUsed ? '<span class="k">*</span>' : ''}</td>
+        <td class="num">${num(c.target)}</td><td class="num">${num(c.stop_loss)}</td><td>${esc(c.timeframe.replace('_', ' '))}</td>
+        <td><span class="pill ${esc(c.eval.status)}">${esc(STATUS_TEXT[c.eval.status] || c.eval.status)}</span>${c.eval.hitOn ? `<div class="k">${esc(c.eval.hitOn)}</div>` : ''}</td>
+        <td class="num">${fmtPct(c.timeframe === 'intraday' ? c.eval.returns[0] : c.eval.returns[1])}</td><td class="num">${fmtPct(c.eval.returns[5])}</td>
+        <td class="num">${fmtPct(c.eval.returns[20])}</td><td class="num">${fmtPct(c.eval.returnNow)}</td></tr>`).join('') + '</tbody>';
+    $('cOut').hidden = !calls.length;
+  } catch (err) { $('cStatus').textContent = 'Error: ' + err.message; }
+}
+$('cGo').onclick = runCalls;
+$('cAction').onchange = renderCalls;
+$('cCsv').onclick = () => downloadCsv(`calls_${$('cFrom').value}_${$('cTo').value}.csv`,
+  ['Date', 'Time', 'Channel', 'Analyst', 'Stock', 'NSE symbol', 'Action', 'Entry', 'Target', 'Stop-loss', 'Timeframe', 'Result', 'Result date', '1d %', '5d %', '20d %', 'Now %', 'Quote', 'Link'],
+  calls.map(c => [c.iso, c.time, c.channel, c.analyst, c.stock, c.symbol, c.action, c.entry ?? c.eval.entryUsed, c.target, c.stop_loss, c.timeframe,
+    STATUS_TEXT[c.eval.status] || c.eval.status, c.eval.hitOn, c.timeframe === 'intraday' ? c.eval.returns[0] : c.eval.returns[1], c.eval.returns[5], c.eval.returns[20], c.eval.returnNow, c.quote, c.link]));
+
+// ---------- summaries ----------
+function loadSummariesTab() { loadSettings().catch(() => {}); ySync(); pollJob().catch(() => {}); runSummaries(); }
+function ySync() { $('yAnalyze').hidden = $('ySource').value !== 'ai'; }
+$('yAnalyze').onclick = e => analyseMissing($('yFrom').value, $('yTo').value, $('yChannel').value, $('yJob'), e.target);
+async function runSummaries() {
+  $('yStatus').textContent = 'Loading…';
+  try {
+    const p = new URLSearchParams({ from: $('yFrom').value, to: $('yTo').value, channel: $('yChannel').value, source: $('ySource').value });
+    const { items, source } = await api('/api/summaries?' + p);
+    if (source === 'rules') return renderRuleSummaries(items);
+    $('yStatus').textContent = (items.length ? `${items.length} AI summar${items.length === 1 ? 'y' : 'ies'}.` : 'No AI summaries yet in this range.')
+      + await aiPendingNote($('yFrom').value, $('yTo').value, $('yChannel').value);
+    const t = (url, time) => { const s = time.split(':').reduce((a, n) => a * 60 + Number(n), 0);
+      return `<a class="tlink" href="${esc(url)}&t=${Math.max(0, s - 5)}s" target="_blank" rel="noopener">▶ ${esc(time)}</a>`; };
+    $('yOut').innerHTML = items.map(i => `<div class="card sumcard">
+      <h3>${esc(i.date)} · ${esc(i.channel)}</h3>
+      <div class="k">${esc(i.title)} · <a href="${esc(i.url)}" target="_blank" rel="noopener">YouTube</a> · ${i.calls} calls · ${esc(i.model)}, $${fx(i.costUsd, 3)}</div>
+      <p><b>Market view.</b> ${esc(i.summary.market_view)}</p>
+      <b>Key points</b><ul>${i.summary.bullets.map(b => `<li>${t(i.url, b.time)}${esc(b.text)}</li>`).join('')}</ul>
+      ${i.summary.top_picks.length ? `<b>Top picks</b><ul>${i.summary.top_picks.map(b => `<li>${t(i.url, b.time)}<b>${esc(b.stock)}</b>: ${esc(b.view)}</li>`).join('')}</ul>` : ''}
+      ${i.summary.key_news.length ? `<b>News</b><ul>${i.summary.key_news.map(b => `<li>${t(i.url, b.time)}${esc(b.text)}</li>`).join('')}</ul>` : ''}
+    </div>`).join('');
+  } catch (err) { $('yStatus').textContent = 'Error: ' + err.message; }
+}
+$('yGo').onclick = runSummaries;
+$('ySource').onchange = () => { ySync(); runSummaries(); };
+
+const TONE = { bullish: '<span class="up">bullish</span>', bearish: '<span class="down">bearish</span>', mixed: 'mixed', neutral: '<span class="k">neutral</span>' };
+function renderRuleSummaries(items) {
+  $('yStatus').textContent = items.length ? `${items.length} stream${items.length === 1 ? '' : 's'}. Built from word counts and the built-in call finder, no AI.` : 'No transcripts in this range.';
+  const t = (url, time) => { const s = time.split(':').reduce((a, n) => a * 60 + Number(n), 0);
+    return `<a class="tlink" href="${esc(url)}&t=${Math.max(0, s - 5)}s" target="_blank" rel="noopener">▶ ${esc(time)}</a>`; };
+  $('yOut').innerHTML = items.map(i => { const r = i.rules; return `<div class="card sumcard">
+    <h3>${esc(i.date)} · ${esc(i.channel)}</h3>
+    <div class="k">${esc(i.title)} · <a href="${esc(i.url)}" target="_blank" rel="noopener">YouTube</a></div>
+    <p><b>Overall tone:</b> ${TONE[r.tone]} (${r.bullishShare}% of tone words were bullish: ${r.bullWords} bullish, ${r.bearWords} bearish).
+      ${r.indices.length ? 'Indices: ' + r.indices.map(x => `${esc(x.name)} ${x.mentions}× (${TONE[x.tone]})`).join(', ') + '.' : ''}</p>
+    <b>Most discussed stocks</b><ul>${r.topStocks.map(x => `<li>${t(i.url, x.first)}<b>${esc(x.name)}</b>: ${x.mentions} mentions, ${TONE[x.tone]}</li>`).join('') || '<li class="none">none from the watchlist</li>'}</ul>
+    <b>Calls found: ${r.calls}</b> (${r.buyCalls} buy, ${r.sellCalls} sell)
+    <ul>${i.topCalls.map(c => `<li>${t(i.url, c.time)}<span class="pill ${esc(c.action)}">${esc(c.action)}</span> <b>${esc(c.stock)}</b> <span class="k">${esc(c.symbol)}</span>${c.target != null ? ' · target ' + num(c.target) : ''}${c.stop_loss != null ? ' · SL ' + num(c.stop_loss) : ''}</li>`).join('')}</ul>
+  </div>`; }).join('');
+}
+
+// ---------- analyst report ----------
+// ISO week: week 1 is the week with 4 January in it; weeks run Monday to Sunday (we use Monday–Friday).
+function isoWeekDates(year, week) {
+  const jan4 = new Date(Date.UTC(year, 0, 4));
+  const monday = new Date(jan4);
+  monday.setUTCDate(jan4.getUTCDate() - ((jan4.getUTCDay() + 6) % 7) + (week - 1) * 7);
+  const friday = new Date(monday); friday.setUTCDate(monday.getUTCDate() + 4);
+  return [monday.toISOString().slice(0, 10), friday.toISOString().slice(0, 10)];
+}
+function isoWeekOf(d) {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  t.setUTCDate(t.getUTCDate() + 3 - ((t.getUTCDay() + 6) % 7));
+  const y = t.getUTCFullYear();
+  return [y, 1 + Math.round((t - new Date(Date.UTC(y, 0, 4))) / 864e5 / 7 - 3 / 7 + ((new Date(Date.UTC(y, 0, 4)).getUTCDay() + 6) % 7) / 7)];
+}
+const fmtDay = iso => new Date(iso + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+function weekChanged() {
+  const y = +$('rYear').value, w = +$('rWeek').value;
+  if (!y || !w) return;
+  const [f, t] = isoWeekDates(y, w);
+  $('rFrom').value = f; $('rTo').value = t;
+  $('rWeekDates').textContent = `${fmtDay(f)} – ${fmtDay(t)}`;
+}
+$('rYear').oninput = weekChanged;
+$('rWeek').oninput = weekChanged;
+for (const id of ['rFrom', 'rTo']) $(id).oninput = () => { $('rWeekDates').textContent = 'custom dates'; };
+let reportInit = false;
+function initReport() {
+  if (reportInit) return;
+  reportInit = true;
+  const last = new Date(); last.setDate(last.getDate() - 7); // last full week by default
+  const [y, w] = isoWeekOf(last);
+  $('rYear').value = y; $('rWeek').value = w;
+  weekChanged();
+}
+
+// Mini price chart: closes after the call, with entry (grey), target (green) and stop-loss (red) lines.
+function spark(c) {
+  const s = c.eval.series || [];
+  if (s.length < 2) return '<span class="k">not enough price days yet</span>';
+  const W = 170, H = 46, P = 3;
+  const vals = s.flatMap(b => [b[1], b[2]]).concat([c.eval.entryUsed, c.target, c.stop_loss].filter(v => v != null));
+  const lo = Math.min(...vals), hi = Math.max(...vals), span = hi - lo || 1;
+  const x = i => P + i * (W - 2 * P) / (s.length - 1), y = v => H - P - (v - lo) / span * (H - 2 * P);
+  const line = (v, cls) => v == null ? '' : `<line class="${cls}" x1="${P}" x2="${W - P}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/>`;
+  const ranges = s.map((b, i) => `<line class="hl" x1="${x(i).toFixed(1)}" x2="${x(i).toFixed(1)}" y1="${y(b[1]).toFixed(1)}" y2="${y(b[2]).toFixed(1)}"/>`).join('');
+  const hit = c.eval.hitOn ? s.findIndex(b => b[0] === c.eval.hitOn) : -1;
+  const dot = hit >= 0 ? `<circle cx="${x(hit).toFixed(1)}" cy="${y(c.eval.status === 'target_hit' ? c.target : c.stop_loss).toFixed(1)}" r="3" fill="${c.eval.status === 'target_hit' ? 'var(--ok)' : 'var(--err)'}"/>` : '';
+  return `<svg class="spark" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Price after the call">
+    ${ranges}${line(c.eval.entryUsed, 'le')}${line(c.target, 'lt')}${line(c.stop_loss, 'ls')}
+    <polyline class="px" points="${s.map((b, i) => `${x(i).toFixed(1)},${y(b[3]).toFixed(1)}`).join(' ')}"/>${dot}</svg>
+    <div class="k">${esc(s[0][0].slice(5))} → ${esc(s.at(-1)[0].slice(5))}, ${s.length} days</div>`;
+}
+
+let report = null, reportNotes = [];
+$('rGo').onclick = async () => {
+  const from = $('rFrom').value, to = $('rTo').value, channel = $('rChannel').value, source = $('rSource').value;
+  if (!from || !to) { $('rStatus').textContent = 'Pick a week or dates.'; return; }
+  $('rGo').disabled = true;
+  reportNotes = [];
+  try {
+    // 1. Transcripts: download any that are missing for these days.
+    if ($('rFetch').checked) {
+      $('rStatus').textContent = 'Checking for missing transcripts and downloading them… (a new week takes 1–2 minutes)';
+      const chs = readChannels().filter(c => !channel || c.name === channel);
+      const { results } = await api('/api/collect', { body: { from, to, channels: chs, tradingDaysOnly: true } });
+      const say = (st, text) => {
+        const rs = results.filter(r => r.status === st);
+        if (rs.length) reportNotes.push(text + rs.map(r => `${fmtDay(r.iso)} ${r.channel}`).join(', ') + '.');
+      };
+      say('no-video', 'No video over 7 hours on YouTube for: ');
+      say('error', 'Could not get subtitles for: ');
+      refreshLibrary();
+    }
+    // 2. AI source: the transcripts in the library that the AI hasn't read yet are analysed first (after you confirm the cost).
+    if (source === 'ai') {
+      const started = await confirmAndStartAnalysis(from, to, channel, $('rStatus'));
+      if (started === null) reportNotes.push('You chose "Not now" for the AI analysis, so transcripts the AI has not read yet are missing from this report.');
+      if (started?.length) {
+        const job = await waitForJob($('rStatus'));
+        if (job?.errors.length) reportNotes.push('AI problems: ' + job.errors.join('; '));
+        if (job) reportNotes.push(`AI analysis of ${job.done} transcript(s) cost about $${fx(job.costUsd, 3)}.`);
+      }
+    }
+    // 3. Calls, prices and ranking.
+    $('rStatus').textContent = 'Finding calls and checking NSE prices…';
+    report = await api('/api/report', { body: { from, to, channel, source, fetchMissing: false } });
+    renderReport();
+  } catch (err) { $('rStatus').textContent = 'Error: ' + err.message; }
+  finally { $('rGo').disabled = false; }
+};
+
+function renderReport() {
+  const r = report;
+  const days = [...new Set(r.transcripts.map(t => t.iso))].length;
+  $('rStatus').textContent = `${fmtDay(r.from)} – ${fmtDay(r.to)}: ${r.transcripts.length} transcripts over ${days} trading days, ${r.totalCalls} calls found, ${r.checkable} checked on prices. `
+    + reportNotes.join(' ');
+  $('rVerdict').innerHTML = r.verdict.map(v => `<li>${esc(v)}</li>`).join('');
+  $('rTable').innerHTML = `<thead><tr><th>#</th><th>Analyst</th><th>Channel</th><th class="num">Calls</th><th class="num">Target / SL / neither</th>
+    <th class="num">Hit rate</th><th class="num">Avg per call</th><th class="num">P&amp;L on ₹10k each</th><th>Best</th><th>Worst</th></tr></thead><tbody>` +
+    r.analysts.map((a, i) => `<tr class="${a.rank === 1 ? 'rank1' : ''}"><td class="k">${a.rank ?? '–'}</td>
+      <td><a href="#an-${i}"><b>${esc(a.name)}</b></a></td><td>${esc(a.channels.join(', '))}</td><td class="num">${a.calls}</td>
+      <td class="num">${a.targetHit} / ${a.slHit} / ${a.open}</td><td class="num">${a.hitRate == null ? '–' : a.hitRate + '%'}</td>
+      <td class="num">${fmtPct(a.avgReturn)}</td><td class="num"><span class="${a.pnl >= 0 ? 'up' : 'down'}">${a.pnl >= 0 ? '+' : '−'}₹${Math.abs(a.pnl).toLocaleString('en-IN')}</span></td>
+      <td>${esc(a.best.symbol || a.best.stock)} ${fmtPct(a.best.realized)}</td><td>${esc(a.worst.symbol || a.worst.stock)} ${fmtPct(a.worst.realized)}</td></tr>`).join('') + '</tbody>';
+  $('rDetails').innerHTML = r.analysts.map((a, i) => `<div class="card" id="an-${i}">
+    <h3>${a.rank ? '#' + a.rank + ' · ' : ''}${esc(a.name)} <span class="k">${esc(a.channels.join(', '))} · ${a.calls} calls · ${fmtPct(a.avgReturn)} per call</span></h3>
+    <div class="scroll"><table><thead><tr><th>Date</th><th>Time</th><th>Stock</th><th>Action</th><th class="num">Entry</th><th class="num">Target</th><th class="num">SL</th>
+      <th>Result</th><th class="num">Return</th><th>Chart</th></tr></thead><tbody>` +
+    a.callList.map(c => `<tr><td style="white-space:nowrap">${esc(c.iso)}</td><td><a href="${esc(c.link)}" target="_blank" rel="noopener">▶ ${esc(c.time)}</a></td>
+      <td><b>${esc(c.stock)}</b> <span class="k">${esc(c.symbol || '')}</span><div class="quote">${esc(c.quote)}</div></td>
+      <td><span class="pill ${esc(c.action)}">${esc(c.action)}</span></td>
+      <td class="num">${num(c.entry ?? c.eval.entryUsed)}</td><td class="num">${num(c.target)}</td><td class="num">${num(c.stop_loss)}</td>
+      <td><span class="pill ${esc(c.eval.status)}">${esc(STATUS_TEXT[c.eval.status] || c.eval.status)}</span>${c.eval.hitOn ? `<div class="k">${esc(c.eval.hitOn)}</div>` : ''}</td>
+      <td class="num">${fmtPct(c.eval.realized)}</td><td>${spark(c)}</td></tr>`).join('') + '</tbody></table></div></div>').join('');
+  $('rOut').hidden = false;
+}
+$('rZip').onclick = e => downloadZip(report.transcripts, 'txt', e.target);
+$('rCsv').onclick = () => downloadCsv(`analyst_report_${report.from}_${report.to}.csv`,
+  ['Rank', 'Analyst', 'Date', 'Time', 'Channel', 'Stock', 'NSE symbol', 'Action', 'Entry', 'Target', 'Stop-loss', 'Result', 'Result date', 'Return %', 'Link'],
+  report.analysts.flatMap(a => a.callList.map(c => [a.rank ?? '', a.name, c.iso, c.time, c.channel, c.stock, c.symbol, c.action, c.entry ?? c.eval.entryUsed,
+    c.target, c.stop_loss, STATUS_TEXT[c.eval.status] || c.eval.status, c.eval.hitOn, c.eval.realized, c.link])));
+
+// ---------- members-only ----------
+const MB_FIELDS = { cookiesMode: 'mbCookiesMode', cookiesPath: 'mbCookiesPath', language: 'mbLanguage', customLanguage: 'mbCustom',
+  whisperMode: 'mbWhisperMode', whisperModel: 'mbWhisperModel', whisperTask: 'mbWhisperTask', keepAudio: 'mbKeepAudio', deleteCookies: 'mbDeleteCookies' };
+const MB_ACTION = { check: 'Checking sign-in', list: 'Listing languages', download: 'Downloading transcripts', update: 'Updating yt-dlp' };
+const MB_LEVEL = { error: 'err', warning: 'note', success: 'okc', debug: 'dim' };
+let mbSettingsLoaded = false, mbJobId = null, mbSince = 0, mbTimer = null, mbAsking = false, mbAccountTimer = null;
+
+function mbSync() {
+  const mode = $('mbCookiesMode').value;
+  $('mbPathWrap').hidden = $('mbDeleteWrap').hidden = mode !== 'file';
+  $('mbAccountCard').hidden = mode !== 'app';
+  $('mbCustomWrap').hidden = $('mbLanguage').value !== 'custom';
+}
+$('mbLanguage').onchange = mbSync;
+$('mbCookiesMode').onchange = () => { mbSync(); if ($('mbCookiesMode').value === 'app') mbLoadAccount(); };
+
+// ---- the app's own YouTube sign-in ----
+function mbShowAccount(a) {
+  const btn = (id, show) => { $(id).hidden = !show; };
+  if (!a.browser) {
+    $('mbAccount').innerHTML = '<span class="err">Google Chrome or Microsoft Edge is needed for signing in.</span> Install Chrome, or use Advanced → a cookies.txt file.';
+    btn('mbSignIn', false); btn('mbSignOut', false); $('mbAccountHelp').hidden = true;
+  } else if (a.signingIn || a.inUse) {
+    $('mbAccount').innerHTML = a.signingIn
+      ? '<b>Sign-in window is open.</b> Sign in to YouTube with your member account there, then <b>close that window</b>.'
+      : 'The app\'s YouTube browser is busy (reading the sign-in, or a sign-in window is still open; close it if so)…';
+    btn('mbSignIn', false); btn('mbSignOut', false); $('mbAccountHelp').hidden = true;
+  } else if (a.signedIn) {
+    $('mbAccount').innerHTML = '<span class="okc">● Signed in to YouTube.</span> Just paste video URLs below; members-only videos use this account.';
+    btn('mbSignIn', false); btn('mbSignOut', true); $('mbAccountHelp').hidden = true;
+  } else {
+    $('mbAccount').innerHTML = '<b>Not signed in.</b> Public videos work now; sign in once for members-only videos.';
+    btn('mbSignIn', true); btn('mbSignOut', false); $('mbAccountHelp').hidden = false;
+  }
+}
+async function mbLoadAccount(fresh = false) {
+  clearTimeout(mbAccountTimer);
+  try {
+    const a = await api('/api/members/account' + (fresh ? '?fresh=1' : ''));
+    mbShowAccount(a);
+    // While the sign-in window is open, check again until it's closed, then re-read the sign-in.
+    if (a.signingIn || a.inUse) mbAccountTimer = setTimeout(() => mbLoadAccount(true), 2000);
+  } catch (e) { $('mbAccount').innerHTML = `<span class="err">${esc(e.message)}</span>`; }
+}
+$('mbSignIn').onclick = async () => {
+  try { await api('/api/members/sign-in', { body: {} }); mbLoadAccount(); } catch (e) { await notice(e.message); }
+};
+$('mbSignOut').onclick = async () => {
+  if (!await askConfirm(['Sign out and switch account?', 'This removes the app\'s YouTube sign-in from this PC. Your normal Chrome is not affected.'],
+    'Sign out', 'Cancel')) return;
+  try { await api('/api/members/sign-out', { body: {} }); await mbLoadAccount(); } catch (e) { await notice(e.message); }
+};
+
+async function loadMembersTab() {
+  try { await mbLoad(); } catch (e) {
+    $('mbStatus').innerHTML = `<span class="err">${esc(e.message)}</span>`;
+    $('mbAccount').textContent = 'Sign-in status unavailable until the server is restarted.';
+  }
+}
+async function mbLoad() {
+  if (!mbSettingsLoaded) {
+    const { settings } = await api('/api/members/settings');
+    for (const [k, id] of Object.entries(MB_FIELDS)) {
+      if ($(id).type === 'checkbox') $(id).checked = !!settings[k]; else $(id).value = settings[k] ?? '';
+    }
+    mbSync();
+    mbSettingsLoaded = true;
+  }
+  if ($('mbCookiesMode').value === 'app') mbLoadAccount();
+  const { job } = await api('/api/members/job');
+  if (job && job.id !== mbJobId) { mbJobId = null; renderMbJob(job); if (job.running) mbPoll(); }
+  const st = await api('/api/members/status');
+  if (!st.ready) {
+    $('mbStatus').innerHTML = `<b>Setup needed:</b> double-click <code>members\\setup.bat</code> once (it installs Python packages into
+      <code>${esc(st.folder)}.venv</code>), then reopen this tab.${st.error ? `<div class="err">${esc(st.error)}</div>` : ''}`;
+    return;
+  }
+  if (!$('mbCookiesPath').value) $('mbCookiesPath').value = st.defaultCookies;
+  $('mbCookiesPath').placeholder = st.defaultCookies;
+  $('mbStatus').innerHTML = `Helper ready · yt-dlp ${esc(st.ytdlp)} · ffmpeg ${st.ffmpeg ? '✓' : '<span class="note">not found (only needed for Whisper)</span>'}
+    · Whisper ${st.whisper ? '✓' : '<span class="k">not installed</span>'}`;
+  $('mbWhisperNote').innerHTML = st.whisper
+    ? 'Runs on this PC\'s CPU: roughly the video\'s length with "medium", half that with "small". The first run downloads the model (0.5–1.5 GB).'
+    : 'Not installed. To enable it, run <code>members\\.venv\\Scripts\\pip install -r members\\requirements-whisper.txt</code>.';
+}
+
+async function mbRun(action) {
+  const input = { action, urls: $('mbUrls').value };
+  for (const [k, id] of Object.entries(MB_FIELDS)) input[k] = $(id).type === 'checkbox' ? $(id).checked : $(id).value.trim();
+  try {
+    const { job } = await api('/api/members/run', { body: input });
+    mbJobId = null;
+    renderMbJob(job);
+    mbPoll();
+  } catch (e) { await notice(e.message); }
+}
+$('mbDownload').onclick = () => mbRun('download');
+$('mbList').onclick = () => mbRun('list');
+$('mbCheck').onclick = () => mbRun('check');
+$('mbUpdate').onclick = () => mbRun('update');
+$('mbStop').onclick = () => api('/api/members/stop', { body: {} }).catch(() => {});
+$('mbOpen').onclick = () => api('/api/members/open-folder', { body: {} }).catch(e => notice(e.message));
+
+function mbPoll() {
+  clearTimeout(mbTimer);
+  mbTimer = setTimeout(async () => {
+    try {
+      const { job } = await api('/api/members/job?since=' + mbSince);
+      if (!job) return;
+      if (job.id !== mbJobId && mbSince) { mbSince = 0; return mbPoll(); } // a new job: fetch its log from the start
+      renderMbJob(job);
+      if (job.running) mbPoll();
+    } catch { mbPoll(); }
+  }, 700);
+}
+
+function renderMbJob(job) {
+  $('mbOut').hidden = false;
+  if (job.id !== mbJobId) {
+    mbJobId = job.id; mbSince = 0;
+    $('mbLog').innerHTML = ''; $('mbResults').innerHTML = '';
+  }
+  const log = $('mbLog');
+  const atBottom = log.scrollTop + log.clientHeight >= log.scrollHeight - 20;
+  log.insertAdjacentHTML('beforeend', job.log.map(l => `<span class="${MB_LEVEL[l.level] || ''}">${esc(l.msg)}</span>\n`).join(''));
+  if (atBottom) log.scrollTop = log.scrollHeight;
+  mbSince = job.logCount;
+  $('mbProgress').value = job.progress || 0;
+  $('mbProgress').hidden = job.action !== 'download';
+  for (const id of ['mbDownload', 'mbList', 'mbCheck', 'mbUpdate']) $(id).disabled = job.running;
+  $('mbStop').hidden = !job.running;
+  $('mbState').innerHTML = job.running ? `${esc(MB_ACTION[job.action])}…`
+    : job.error ? `<span class="err">${esc(job.error)}</span>`
+    : `${esc(MB_ACTION[job.action])}: done${job.action === 'download' ? ` · ${job.added} transcript(s) added to the Library` : ''}`;
+  if (job.question && !mbAsking) {
+    mbAsking = true;
+    askConfirm(job.question.split('\n').filter(Boolean), 'Yes, transcribe', 'No')
+      .then(yes => api('/api/members/answer', { body: { yes } }))
+      .catch(() => {}).finally(() => { mbAsking = false; });
+  }
+  if (!job.running && job.result?.videos?.length) {
+    $('mbResults').innerHTML = job.action === 'list' ? mbListTable(job.result.videos) : mbDownloadTable(job.result.videos);
+    if (job.action === 'download' && job.added) refreshLibrary().catch(() => {});
+  }
+}
+
+const mbErr = e => `<span class="err">${esc(e.message)}</span>${e.fix ? `<div class="k">Fix: ${esc(e.fix)}</div>` : ''}`;
+const mbVideo = v => v.title ? `<a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.title)}</a>` : esc(v.url);
+
+function mbDownloadTable(videos) {
+  return `<div class="scroll"><table><thead><tr><th>Video</th><th>Channel</th><th>Date</th><th>Result</th></tr></thead><tbody>` +
+    videos.map(v => `<tr><td>${mbVideo(v)}</td><td>${esc(v.channel || '')}</td><td style="white-space:nowrap">${esc(v.iso || '')}</td><td>` +
+      (v.tracks || []).map(t => `<div><span class="badge saved">${esc(t.label)}${t.whisper ? ' · Whisper' : t.auto ? ' · auto' : ''}</span>
+        ${fileLinks(t)} <span class="k">${t.lines} lines</span></div>`).join('') +
+      (v.missing?.length ? `<div class="note">No captions for: ${esc(v.missing.join(', '))}</div>` : '') +
+      (v.error ? mbErr(v.error) : '') + '</td></tr>').join('') + '</tbody></table></div>';
+}
+
+function mbListTable(videos) {
+  return `<div class="scroll"><table><thead><tr><th>Video</th><th>Native</th><th>Uploaded subtitles</th><th>Auto (original)</th><th class="num">Auto-translated</th></tr></thead><tbody>` +
+    videos.map(v => v.error ? `<tr><td>${mbVideo(v)}</td><td colspan="4">${mbErr(v.error)}</td></tr>`
+      : `<tr><td>${mbVideo(v)}<div class="k">${esc(v.channel)} · ${esc(v.iso)}</div></td><td>${esc(v.native || '?')}</td>
+        <td>${esc(v.manual.join(', ') || '–')}</td><td>${esc(v.orig.join(', ') || '–')}</td><td class="num">${v.translated}</td></tr>`).join('') +
+    '</tbody></table></div>';
+}
+
+refreshLibrary().catch(() => {});
+let startTab = 'find';
+try { startTab = localStorage.getItem('tab') || 'find'; } catch {}
+show(startTab);
+</script>
+</body>
+</html>

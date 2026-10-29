@@ -1,0 +1,2 @@
+# Core (captions download). Keep it fresh: pip install -U "yt-dlp[default]"
+yt-dlp[default]>=2025.1.1

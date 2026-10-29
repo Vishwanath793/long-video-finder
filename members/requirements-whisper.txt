@@ -1,0 +1,2 @@
+# Optional speech-to-text fallback for videos without captions (Phase 3)
+faster-whisper>=1.0.3

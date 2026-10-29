@@ -1,0 +1,19 @@
+{
+  "name": "long-video-finder",
+  "version": "1.0.0",
+  "description": "Finds the long daily streams of Zee Business (First Trade) and CNBC Awaaz, downloads their subtitles, and lets you search them and count stock mentions. Needs only Node.js; no API key, no packages.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
+}

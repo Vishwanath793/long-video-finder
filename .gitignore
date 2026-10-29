@@ -3,7 +3,8 @@
 #   data/youtube-browser/      signed-in YouTube browser profile (login cookies)
 #   data/members-settings.json Members-only settings
 #   data/transcripts, ai, ...  downloaded subtitles and analyses
-data/
+# (Only the top-level data folder: members/tests/data holds sample files the tests need.)
+/data/
 
 # Rebuilt by `npm install` / members\setup.bat
 node_modules/
